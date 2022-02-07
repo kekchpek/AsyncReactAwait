@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<Version>0.1.0</Version>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Authors>kek_chpek</Authors>
+	<Description>The auxiliary classes for developing Unity 3d applications.</Description>
+	<PackageProjectUrl>https://github.com/kekchpek/UnityAuxiliaryTools</PackageProjectUrl>
+	<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	<RepositoryUrl>https://github.com/kekchpek/UnityAuxiliaryTools</RepositoryUrl>
+	<RepositoryType />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Nikolai\Documents\MY_PROJECTS\UnityAuxiliaryTools\UnityAuxiliaryTools\obj\UnityAuxiliaryTools.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>Libs\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

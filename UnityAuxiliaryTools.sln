@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityAuxiliaryTools", "UnityAuxiliaryTools\UnityAuxiliaryTools.csproj", "{C970D58B-58B2-45DF-893F-69F5AE222FB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autotests", "Autotests\Autotests.csproj", "{A14C2A8F-8E91-40BD-972F-607B66C975A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DC218CA1-07F3-43F4-98BC-E3D0AFAE2F64}"
+	ProjectSection(SolutionItems) = preProject
+		Autotests\Libs\NSubstitute.dll = Autotests\Libs\NSubstitute.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C970D58B-58B2-45DF-893F-69F5AE222FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C970D58B-58B2-45DF-893F-69F5AE222FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C970D58B-58B2-45DF-893F-69F5AE222FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C970D58B-58B2-45DF-893F-69F5AE222FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52267682-0EEB-4060-BFCA-1A425AA357BA}
+	EndGlobalSection
+EndGlobal
