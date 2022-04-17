@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -58,6 +59,11 @@ namespace UnityAuxiliaryTools.UnityExecutor
         {
             if (callback == null)
                 Debug.LogWarning("Null callback was submitted to execute");
+        }
+
+        public void ExcuteCoroutine(IEnumerator coroutine)
+        {
+            StartCoroutine(coroutine);
         }
     }
 }
