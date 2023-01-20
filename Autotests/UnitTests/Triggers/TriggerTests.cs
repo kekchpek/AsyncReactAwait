@@ -14,7 +14,7 @@ namespace UnityAuxiliartyTools.Tests.Triggers
             
             // Act
             var triggered = 0;
-            trigger.OnTriggered += () => triggered++;
+            trigger.Triggered += () => triggered++;
             trigger.Trigger();
             
             // Assert

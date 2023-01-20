@@ -4,4 +4,9 @@
     {
         
     }
+
+    public interface IRegularTrigger<T> : ITrigger<T>, ITriggerHandler<T>
+    {
+
+    }
 }

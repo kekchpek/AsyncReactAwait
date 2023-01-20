@@ -4,4 +4,9 @@
     {
         void Trigger();
     }
+
+    public interface ITrigger<T>
+    {
+        void Trigger(T obj);
+    }
 }
