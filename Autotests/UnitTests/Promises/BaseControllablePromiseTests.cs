@@ -10,29 +10,27 @@ namespace UnityAuxiliartyTools.Tests.Promises
     {
         private class TestPromise : BaseControllablePromise
         {
-            public TestPromise(IUnityExecutor unityExecutor) : base(unityExecutor)
+            public TestPromise()
             {
             }
         }
 
-        private TestPromise CreatePromise(out IUnityExecutor unityExecutor)
+        private TestPromise CreatePromise()
         {
-            unityExecutor = Substitute.For<IUnityExecutor>();
-            return new TestPromise(unityExecutor);
+            return new TestPromise();
         }
 
         [Test]
         public void Fails_OnFailCallback_SubmittedToExecute()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             Exception proceedException = null;
             var testException = new Exception("Test exception");
             var failCallback = new Action<Exception>(e =>
             {
                 proceedException = e;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
 
             // Act
             promise.OnFail(failCallback);
@@ -46,14 +44,13 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Fails_OnFailBefore_SubmittedToExecute()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             Exception proceedException = null;
             var testException = new Exception("Test exception");
             var failCallback = new Action<Exception>(e =>
             {
                 proceedException = e;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
 
             // Act
             promise.Fail(testException);
@@ -67,13 +64,12 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Fails_FinallyCallback_SubmittedToExecute()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var wasCalled = false;
             var finallyCallback = new Action(() =>
             {
                 wasCalled = true;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
 
             // Act
             promise.Finally(finallyCallback);
@@ -87,13 +83,12 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Fails_FinallyBefore_SubmittedToExecute()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var wasCalled = false;
             var finallyCallback = new Action(() =>
             {
                 wasCalled = true;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
 
             // Act
             promise.Fail(new Exception("Test exception"));
@@ -107,7 +102,7 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Finally_ReturnsItself()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
 
             // Act
             var retVal = promise.Finally(() => { });
@@ -120,7 +115,7 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void OnFail_ReturnsItself()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
 
             // Act
             var retVal = promise.OnFail(e => { });
@@ -133,7 +128,7 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void FailTwice_ExceptionThrown()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             promise.Fail(new Exception("Test exception"));
 
             // Act

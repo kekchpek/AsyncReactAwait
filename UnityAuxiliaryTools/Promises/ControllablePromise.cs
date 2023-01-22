@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityAuxiliaryTools.UnityExecutor;
 
 namespace UnityAuxiliaryTools.Promises
 {
     public class ControllablePromise : BaseControllablePromise, IControllablePromise
     {
-        private readonly IUnityExecutor _unityExecutor;
 
         private readonly IList<Action> _successCallbacks = new List<Action>();
-        
-        public ControllablePromise(IUnityExecutor unityExecutor) : base(unityExecutor)
-        {
-            _unityExecutor = unityExecutor;
-        }
 
         public void Success()
         {
@@ -23,7 +16,7 @@ namespace UnityAuxiliaryTools.Promises
                     throw new InvalidOperationException("Promise is already completed!");
                 foreach (var callback in _successCallbacks)
                 {
-                    _unityExecutor.ExecuteOnFixedUpdate(() => callback?.Invoke());
+                    callback?.Invoke();
                 }
 
                 DoFinally();
@@ -50,18 +43,11 @@ namespace UnityAuxiliaryTools.Promises
     
     public class ControllablePromise<T> : BaseControllablePromise, IControllablePromise<T>
     {
-        private readonly IUnityExecutor _unityExecutor;
-        
         private readonly IList<Action<T>> _successCallbacks = new List<Action<T>>();
 
         private T _result;
         private bool _resultSet;
         
-        public ControllablePromise(IUnityExecutor unityExecutor) : base(unityExecutor)
-        {
-            _unityExecutor = unityExecutor;
-        } 
-
         public void Success(T result)
         {
             lock (this)
@@ -72,7 +58,7 @@ namespace UnityAuxiliaryTools.Promises
                 _resultSet = true;
                 foreach (var callback in _successCallbacks)
                 {
-                    _unityExecutor.ExecuteOnFixedUpdate(() => callback?.Invoke(_result));
+                    callback?.Invoke(_result);
                 }
 
                 DoFinally();

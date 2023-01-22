@@ -9,17 +9,16 @@ namespace UnityAuxiliartyTools.Tests.Promises
     public class GenericControllablePromiseTests
     {
 
-        private ControllablePromise<object> CreatePromise(out IUnityExecutor unityExecutor)
+        private ControllablePromise<object> CreatePromise()
         {
-            unityExecutor = Substitute.For<IUnityExecutor>();
-            return new ControllablePromise<object>(unityExecutor);
+            return new ControllablePromise<object>();
         }
         
         [Test]
         public void OnSuccess_ReturnsItself()
         {
             // Arrange
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             
             // Act
             var retVal = promise.OnSuccess(x => { });
@@ -32,14 +31,13 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Success_OnSuccessCallback_SubmittedToExecute()
         {
             // Arrange
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var someObject = new object();
             object successResult = null;
             var callback = new Action<object>(x =>
             {
                 successResult = x;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
             
             // Act
             promise.OnSuccess(callback);
@@ -53,14 +51,13 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Success_OnSuccessBefore_SubmittedToExecute()
         {
             // Arrange
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var someObject = new object();
             object successResult = null;
             var callback = new Action<object>(x =>
             {
                 successResult = x;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
             
             // Act
             promise.Success(someObject);
@@ -74,13 +71,12 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Success_FinallyCallback_SubmittedToExecute()
         {
             // Arrange
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var isExecuted = false;
             var callback = new Action(() =>
             {
                 isExecuted = true;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
             
             // Act
             promise.Finally(callback);
@@ -94,13 +90,12 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void Success_FinallyBefore_SubmittedToExecute()
         {
             // Arrange
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             var isExecuted = false;
             var callback = new Action(() =>
             {
                 isExecuted = true;
             });
-            unityExecutor.ExecuteOnFixedUpdate(Arg.Do<Action>(x => x?.Invoke()));
             
             // Act
             promise.Success(new object());
@@ -113,7 +108,7 @@ namespace UnityAuxiliartyTools.Tests.Promises
         public void SuccessTwice_ExceptionThrown()
         {
             // Arrange 
-            var promise = CreatePromise(out var unityExecutor);
+            var promise = CreatePromise();
             promise.Success(new object());
 
             // Act
