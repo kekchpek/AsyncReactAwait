@@ -2,7 +2,6 @@
 using NSubstitute;
 using NUnit.Framework;
 using UnityAuxiliaryTools.Promises;
-using UnityAuxiliaryTools.UnityExecutor;
 
 namespace UnityAuxiliartyTools.Tests.Promises
 {

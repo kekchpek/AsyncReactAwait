@@ -2,7 +2,6 @@
 using NSubstitute;
 using NUnit.Framework;
 using UnityAuxiliaryTools.Promises;
-using UnityAuxiliaryTools.UnityExecutor;
 
 namespace UnityAuxiliartyTools.Tests.Promises
 {
@@ -51,10 +50,10 @@ namespace UnityAuxiliartyTools.Tests.Promises
         {
             // Arrange
             var promise = CreatePromise();
-            var isExecuted = false;
+            var isExecuted = 0;
             var callback = new Action(() =>
             {
-                isExecuted = true;
+                isExecuted++;
             });
             
             // Act
@@ -62,7 +61,7 @@ namespace UnityAuxiliartyTools.Tests.Promises
             promise.OnSuccess(callback);
             
             // Assert
-            Assert.IsTrue(isExecuted);
+            Assert.AreEqual(1, isExecuted);
         }
         
         [Test]

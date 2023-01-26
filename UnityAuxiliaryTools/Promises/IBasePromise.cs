@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityAuxiliaryTools.Promises.Awaiter;
 
 namespace UnityAuxiliaryTools.Promises
 {
@@ -7,6 +8,12 @@ namespace UnityAuxiliaryTools.Promises
     /// </summary>
     public interface IBasePromise
     {
+
+        /// <summary>
+        /// Returns true if promise is completed.
+        /// </summary>
+        bool IsCompleted { get; }
+
         /// <summary>
         /// Callback will be executed in the Unity thread after the promise will fail.
         /// </summary>

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 
 namespace UnityAuxiliaryTools.Promises
 {
+
+    /// <inheritdoc cref="IBaseControllablePromise"/>
     public abstract class BaseControllablePromise : IBaseControllablePromise
     {
 
@@ -10,9 +13,17 @@ namespace UnityAuxiliaryTools.Promises
         private readonly IList<Action> _finallyCallbacks = new List<Action>();
 
         private Exception _failingError;
-        protected bool IsCompleted { get; private set; }
-        
-        
+
+        /// <summary>
+        /// An exception that cause promise fail. 
+        /// </summary>
+        [CanBeNull]
+        protected Exception FailException => _failingError;
+
+        /// <inheritdoc cref="IBasePromise.IsCompleted"/>
+        public bool IsCompleted { get; private set; }
+
+        /// <inheritdoc cref="IBasePromise.OnFail(Action{Exception})"/>
         public IBasePromise OnFail(Action<Exception> callback)
         {
             lock (this)
@@ -31,6 +42,7 @@ namespace UnityAuxiliaryTools.Promises
             
         }
 
+        /// <inheritdoc cref="IBasePromise.Finally(Action)"/>
         public IBasePromise Finally(Action callback)
         {
             lock (this)
@@ -48,6 +60,7 @@ namespace UnityAuxiliaryTools.Promises
             return this;
         }
 
+        /// <inheritdoc cref="IBaseControllablePromise.Fail(Exception)"/>
         public void Fail(Exception error)
         {
             lock (this)
