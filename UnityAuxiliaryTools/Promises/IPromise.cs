@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using UnityAuxiliaryTools.Promises.AsyncMethodBuilder;
 using UnityAuxiliaryTools.Promises.Awaiter;
 
 namespace UnityAuxiliaryTools.Promises
@@ -7,6 +9,7 @@ namespace UnityAuxiliaryTools.Promises
     /// An async operation with ability to proceed the result. PAY ATTENTION: promises callbacks will be executed in the Unity thread.
     /// </summary>
     /// <typeparam name="T">The type of the result</typeparam>
+    [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder<>))]
     public interface IPromise<T> : IBasePromise
     {
 
@@ -36,10 +39,12 @@ namespace UnityAuxiliaryTools.Promises
         /// <returns>Returns true if result can be obtained. False - otherwise.</returns>
         bool TryGetResult(out T result);
     }
-    
+
+
     /// <summary>
     /// An async operation with ability to proceed the result. PAY ATTENTION: promises callbacks will be executed in the Unity thread.
     /// </summary>
+    [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder))]
     public interface IPromise : IBasePromise
     {
         /// <summary>

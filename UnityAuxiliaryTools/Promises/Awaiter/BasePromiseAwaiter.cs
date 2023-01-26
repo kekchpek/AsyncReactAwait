@@ -44,5 +44,9 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
             });
         }
 
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            OnCompleted(continuation);
+        }
     }
 }

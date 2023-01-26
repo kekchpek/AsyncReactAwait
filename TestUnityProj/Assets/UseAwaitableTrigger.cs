@@ -1,4 +1,5 @@
 using System.Threading;
+using UnityAuxiliaryTools.Promises;
 using UnityAuxiliaryTools.Trigger;
 using UnityEngine;
 
@@ -13,7 +14,12 @@ public class UseAwaitableTrigger : MonoBehaviour
     private async void Start()
     {
         _moveTrigger = new RegularTrigger<Vector3>();
-        transform.position += await _moveTrigger;
+        transform.position += await AwaitTrigger(_moveTrigger);
+    }
+
+    private async IPromise<Vector3> AwaitTrigger(IRegularTrigger<Vector3> t)
+    {
+        return await t;
     }
 
     private void FixedUpdate()
