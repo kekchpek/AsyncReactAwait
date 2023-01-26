@@ -15,13 +15,9 @@ namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
 
         private IControllablePromise _promise;
 
-        public IPromise Task
-        {
-            get
-            {
-                return _promise ??= new ControllablePromise();
-            }
-        }
+        public IPromise Task => TaskInternal;
+
+        private IControllablePromise TaskInternal => _promise ??= new ControllablePromise();
 
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
@@ -49,12 +45,12 @@ namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
 
         public void SetException(Exception exception)
         {
-            _promise.Fail(exception);
+            TaskInternal.Fail(exception);
         }
 
         public void SetResult()
         {
-            _promise.Success();
+            TaskInternal.Success();
         }
 
     }
@@ -70,13 +66,10 @@ namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
 
         private IControllablePromise<T> _promise;
 
-        public IPromise<T> Task
-        {
-            get
-            {
-                return _promise ??= new ControllablePromise<T>();
-            }
-        }
+
+        public IPromise<T> Task => TaskInternal;
+
+        private IControllablePromise<T> TaskInternal => _promise ??= new ControllablePromise<T>();
 
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
@@ -104,12 +97,12 @@ namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
 
         public void SetException(Exception exception)
         {
-            _promise.Fail(exception);
+            TaskInternal.Fail(exception);
         }
 
         public void SetResult(T result)
         {
-            _promise.Success(result);
+            TaskInternal.Success(result);
         }
 
     }
