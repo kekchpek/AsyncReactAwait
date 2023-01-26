@@ -1,28 +1,30 @@
 using System.Threading;
-using UnityAuxiliaryTools.Promises;
+using UnityAuxiliaryTools.Trigger;
 using UnityEngine;
 
-public class UseAwaitablePromise : MonoBehaviour
+public class UseAwaitableTrigger : MonoBehaviour
 {
 
     private float _time;
-    private IControllablePromise<Vector3> _movePromise;
+    private bool _done;
+    private IRegularTrigger<Vector3> _moveTrigger;
     
     // Start is called before the first frame update
     private async void Start()
     {
-        _movePromise = new ControllablePromise<Vector3>();
-        transform.position += await _movePromise;
+        _moveTrigger = new RegularTrigger<Vector3>();
+        transform.position += await _moveTrigger;
     }
 
     private void FixedUpdate()
     {
         _time += Time.fixedDeltaTime;
-        if (_time > 5f && !_movePromise.IsCompleted)
+        if (_time > 2f && !_done)
         {
+            _done = true;
             var thread = new Thread(() =>
             {
-                _movePromise.Success(Vector3.up);
+                _moveTrigger.Trigger(Vector3.up);
             });
             thread.Start();
         }
