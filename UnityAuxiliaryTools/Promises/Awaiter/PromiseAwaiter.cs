@@ -6,12 +6,19 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
 {
     internal class PromiseAwaiter : BasePromiseAwaiter, IPromiseAwaiter
     {
+
+        private IPromise _sourcePromise;
+
         public PromiseAwaiter(IPromise promise, SynchronizationContext capturedContext)
             : base(promise, capturedContext)
         {
+            _sourcePromise = promise;
         }
 
-        public void GetResult() { }
+        public void GetResult() 
+        {
+            _sourcePromise.ThrowIfFailed();
+        }
     }
 
     internal class PromiseAwaiter<T> : BasePromiseAwaiter, IPromiseAwaiter<T>

@@ -33,7 +33,7 @@ namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            awaiter.OnCompleted(stateMachine.MoveNext);
+            awaiter.UnsafeOnCompleted(stateMachine.MoveNext);
         }
 
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
