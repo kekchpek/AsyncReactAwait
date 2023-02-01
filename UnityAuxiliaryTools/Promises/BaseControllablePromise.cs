@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityAuxiliaryTools.Promises
 {
@@ -17,7 +17,7 @@ namespace UnityAuxiliaryTools.Promises
         /// <summary>
         /// An exception that cause promise fail. 
         /// </summary>
-        [CanBeNull]
+        [AllowNull]
         protected Exception FailException => _failingError;
 
         /// <inheritdoc cref="IBasePromise.IsCompleted"/>

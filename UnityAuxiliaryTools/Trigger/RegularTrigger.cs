@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using UnityAuxiliaryTools.Trigger.Awaiter;
-using UnityEngine;
 
 namespace UnityAuxiliaryTools.Trigger
 {
