@@ -5,8 +5,19 @@ namespace AsyncReactAwait.Trigger.Awaiter
 {
     internal class TriggerAwaiter : BaseTriggerAwaiter<ITriggerAwaiter>, ITriggerAwaiter
     {
-        public TriggerAwaiter(ITriggerHandler trigger, SynchronizationContext context) : base(trigger, context)
+
+        private ITriggerHandler _trigger;
+
+        public TriggerAwaiter(ITriggerHandler trigger, SynchronizationContext context) : base(context)
         {
+            _trigger = trigger;
+            _trigger.Triggered += OnTriggered;
+        }
+
+        private void OnTriggered()
+        {
+            _trigger.Triggered -= OnTriggered;
+            Complete();
         }
 
         public void GetResult()
@@ -27,7 +38,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
         private T _triggerData;
         private bool _triggerDataSet = false;
 
-        public TriggerAwaiter(ITriggerHandler<T> trigger, SynchronizationContext context, Func<T, bool> predicate) : base(trigger, context)
+        public TriggerAwaiter(ITriggerHandler<T> trigger, SynchronizationContext context, Func<T, bool> predicate) : base(context)
         {
             _trigger = trigger;
             _predicate = predicate;
@@ -55,6 +66,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
                 _trigger.Triggered -= TriggerActivated;
                 _triggerDataSet = true;
                 _triggerData = obj;
+                Complete();
             }
         }
     }

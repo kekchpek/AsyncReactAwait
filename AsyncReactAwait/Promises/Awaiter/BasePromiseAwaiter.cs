@@ -10,7 +10,7 @@ namespace AsyncReactAwait.Promises.Awaiter
         private readonly IBasePromise _sourcePromise;
         private readonly SynchronizationContext _syncContext;
 
-        private bool _captureContext;
+        private bool _captureContext = true;
 
         protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext sincConnext)
         {
@@ -36,7 +36,7 @@ namespace AsyncReactAwait.Promises.Awaiter
             }
             _sourcePromise.Finally(() =>
             {
-                if (_syncContext != null)
+                if (_syncContext != null && _captureContext)
                 {
                     _syncContext.Send(_ => continuation?.Invoke(), null);
                 }
