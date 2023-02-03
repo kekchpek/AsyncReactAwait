@@ -22,7 +22,7 @@ namespace AsyncReactAwait.Bindable
             get => _value;
             set
             {
-                if (_value.Equals(value))
+                if (Equals(_value, value))
                     return;
                 _value = value;
                 _onChangeBlind?.Invoke();
