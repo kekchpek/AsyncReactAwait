@@ -21,15 +21,15 @@ jobs:
         dotnet-version: '3.1.x'
     - name: Set version
       run: |
-       sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.run_number}}/" UnityAuxiliaryTools/UnityAuxiliaryTools.csproj
-       echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" UnityAuxiliaryTools/UnityAuxiliaryTools.csproj)" >> $GITHUB_ENV
+       sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.run_number}}/" AsyncReactAwait/AsyncReactAwait.csproj
+       echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" AsyncReactAwait/AsyncReactAwait.csproj)" >> $GITHUB_ENV
        echo "Buid version is $BUILD_VERSION"
     - name: Restore .Net
       run: dotnet restore
     - name: Test
       run: dotnet test --verbosity normal
     - name: Build
-      run: dotnet build UnityAuxiliaryTools/UnityAuxiliaryTools.csproj --no-dependencies --output build
+      run: dotnet build AsyncReactAwait/AsyncReactAwait.csproj --no-dependencies --output build
     - name: Publish package to GitHub
       run: |
        dotnet nuget add source --username kekchpek --password ${{ secrets.PAT_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/kekchpek/index.json"
@@ -38,11 +38,11 @@ jobs:
       run: |
        dotnet nuget push build/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
     - name: Zip build
-      run: zip UnityAuxiliaryTools.zip build/UnityAuxiliaryTools.dll build/UnityAuxiliaryTools.xml
+      run: zip AsyncReactAwait.zip build/AsyncReactAwait.dll build/AsyncReactAwait.xml
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.BUILD_VERSION }}
         name: Release ${{ env.BUILD_VERSION }}
-        artifacts: "build/*.nupkg, UnityAuxiliaryTools.zip"
+        artifacts: "build/*.nupkg, AsyncReactAwait.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
