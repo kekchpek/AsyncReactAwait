@@ -1,5 +1,4 @@
-using System.Threading;
-using UnityAuxiliaryTools.Promises;
+using AsyncReactAwait.Promises;
 using UnityEngine;
 
 public class UseAwaitablePromiseInstantly : MonoBehaviour

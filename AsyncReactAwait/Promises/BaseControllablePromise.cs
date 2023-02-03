@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnityAuxiliaryTools.Promises
+namespace AsyncReactAwait.Promises
 {
 
     /// <inheritdoc cref="IBaseControllablePromise"/>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace UnityAuxiliaryTools.Promises.AsyncMethodBuilder
+namespace AsyncReactAwait.Promises.AsyncMethodBuilder
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public struct AsyncPromiseMethodBuilder

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using UnityAuxiliaryTools.Trigger.Awaiter;
+using AsyncReactAwait.Trigger.Awaiter;
 
-namespace UnityAuxiliaryTools.Trigger
+namespace AsyncReactAwait.Trigger
 {
 
     /// <inheritdoc cref="IRegularTrigger"/>
@@ -13,16 +13,9 @@ namespace UnityAuxiliaryTools.Trigger
         public event Action Triggered;
 
         /// <inheritdoc cref="ITriggerHandler.ConfigureAwaiter(bool)"/>
-        public IConfiguredTriggerAwaiterContainer ConfigureAwaiter(bool captureContext)
+        public ITriggerAwaiter ConfigureAwaiter(bool captureContext)
         {
-            if (captureContext)
-            {
-                return new ConfiguredTriggerAwaiterContainer(GetAwaiter());
-            }
-            else
-            {
-                return new ConfiguredTriggerAwaiterContainer(new TriggerAwaiter(this, null));
-            }
+            return GetAwaiter().ConfigureAwaiter(captureContext);
         }
 
         /// <inheritdoc cref="ITriggerHandler.GetAwaiter"/>
@@ -70,20 +63,19 @@ namespace UnityAuxiliaryTools.Trigger
         /// <inheritdoc cref="ITriggerHandler{T}.GetAwaiter"/>
         public new ITriggerAwaiter<T> GetAwaiter()
         {
-            return new TriggerAwaiter<T>(this, SynchronizationContext.Current);
+            return new TriggerAwaiter<T>(this, SynchronizationContext.Current, null);
         }
 
         /// <inheritdoc cref="ITriggerHandler{T}.ConfigureAwaiter(bool)"/>
-        public new IConfiguredTriggerAwaiterContainer<T> ConfigureAwaiter(bool captureContext)
+        public new ITriggerAwaiter<T> ConfigureAwaiter(bool captureContext)
         {
-            if (captureContext)
-            {
-                return new ConfiguredTriggerAwaiterContainer<T>(GetAwaiter());
-            }
-            else
-            {
-                return new ConfiguredTriggerAwaiterContainer<T>(new TriggerAwaiter<T>(this, null));
-            }
+            return GetAwaiter().ConfigureAwaiter(captureContext);
+        }
+
+        /// <inheritdoc cref="ITriggerHandler{T}.WillBe"/>
+        public ITriggerAwaiter<T> WillBe(Func<T, bool> predicate)
+        {
+            return new TriggerAwaiter<T>(this, SynchronizationContext.Current, predicate);
         }
     }
 }

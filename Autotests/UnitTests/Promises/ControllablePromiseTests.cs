@@ -1,9 +1,9 @@
 ﻿using System;
 using NSubstitute;
 using NUnit.Framework;
-using UnityAuxiliaryTools.Promises;
+using AsyncReactAwait.Promises;
 
-namespace UnityAuxiliartyTools.Tests.Promises
+namespace AsyncReactAwait.Tests.Promises
 {
     public class ControllablePromiseTests
     {

@@ -5,15 +5,15 @@
 	<Version>0.5.0</Version>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<Authors>kek_chpek</Authors>
-	<Description>The auxiliary classes for developing Unity 3d applications.</Description>
-	<PackageProjectUrl>https://github.com/kekchpek/UnityAuxiliaryTools</PackageProjectUrl>
+	<Description>The tools for building reactive async code.</Description>
+	<PackageProjectUrl>https://github.com/kekchpek/AsyncReactAwait</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-	<RepositoryUrl>https://github.com/kekchpek/UnityAuxiliaryTools</RepositoryUrl>
+	<RepositoryUrl>https://github.com/kekchpek/AsyncReactAwait</RepositoryUrl>
 	<RepositoryType />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>obj\UnityAuxiliaryTools.xml</DocumentationFile>
+    <DocumentationFile>obj\AsyncReactAwait.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

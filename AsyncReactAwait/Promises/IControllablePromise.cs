@@ -1,4 +1,4 @@
-﻿namespace UnityAuxiliaryTools.Promises
+﻿namespace AsyncReactAwait.Promises
 {
 
     /// <summary>

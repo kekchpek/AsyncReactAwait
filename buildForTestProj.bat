@@ -1,2 +1,2 @@
-dotnet build UnityAuxiliaryTools/UnityAuxiliaryTools.csproj --no-dependencies --output build
-copy build\UnityAuxiliaryTools.dll TestUnityProj\Assets\Libs\UnityAuxiliaryTools.dll
+dotnet build AsyncReactAwait/AsyncReactAwait.csproj --no-dependencies --output build
+copy build\AsyncReactAwait.dll TestUnityProj\Assets\Libs\AsyncReactAwait.dll

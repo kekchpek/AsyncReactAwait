@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using UnityAuxiliaryTools.Promises.AsyncMethodBuilder;
-using UnityAuxiliaryTools.Promises.Awaiter;
+using AsyncReactAwait.Promises.AsyncMethodBuilder;
+using AsyncReactAwait.Promises.Awaiter;
 
-namespace UnityAuxiliaryTools.Promises
+namespace AsyncReactAwait.Promises
 {
     /// <summary>
-    /// An async operation with ability to proceed the result. PAY ATTENTION: promises callbacks will be executed in the Unity thread.
+    /// An async operation with ability to proceed the result.
     /// </summary>
     /// <typeparam name="T">The type of the result</typeparam>
     [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder<>))]
@@ -18,7 +18,7 @@ namespace UnityAuxiliaryTools.Promises
         /// </summary>
         /// <param name="continueOnCapturedContext">Should awaited execution be exececuted on captured context.</param>
         /// <returns>The promise awaiter container</returns>
-        IConfiguredPromiseAwaiterContainer<T> ConfigureAwait(bool continueOnCapturedContext);
+        IPromiseAwaiter<T> ConfigureAwait(bool continueOnCapturedContext);
 
         /// <summary>
         /// Gets an awaiter for promise async execution.
@@ -27,7 +27,7 @@ namespace UnityAuxiliaryTools.Promises
         IPromiseAwaiter<T> GetAwaiter();
 
         /// <summary>
-        /// Callback will be executed in the Unity thread after the promise will success.
+        /// Callback will be executed after the promise will success.
         /// </summary>
         /// <param name="callback">A callback to execute</param>
         IPromise<T> OnSuccess(Action<T> callback);
@@ -42,7 +42,7 @@ namespace UnityAuxiliaryTools.Promises
 
 
     /// <summary>
-    /// An async operation with ability to proceed the result. PAY ATTENTION: promises callbacks will be executed in the Unity thread.
+    /// An async operation with ability to proceed the result.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder))]
     public interface IPromise : IBasePromise
@@ -50,9 +50,9 @@ namespace UnityAuxiliaryTools.Promises
         /// <summary>
         /// Creates configured awaiter for the promise.
         /// </summary>
-        /// <param name="continueOnUnityMainThread">Should awaited execution be exececuted on Unity main thread.</param>
+        /// <param name="captureContext">Should awaited execution be exececuted on captured context.</param>
         /// <returns>The promise awaiter container.</returns>
-        IConfiguredPromiseAwaiterContainer ConfigureAwait(bool continueOnUnityMainThread);
+        IPromiseAwaiter ConfigureAwait(bool captureContext);
 
         /// <summary>
         /// Gets an awaiter for promise async execution.
@@ -61,7 +61,7 @@ namespace UnityAuxiliaryTools.Promises
         IPromiseAwaiter GetAwaiter();
 
         /// <summary>
-        /// Callback will be executed in the Unity thread after the promise will success.
+        /// Callback will be executed after the promise will success.
         /// </summary>
         /// <param name="callback">A callback to execute</param>
         IPromise OnSuccess(Action callback);

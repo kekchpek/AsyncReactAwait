@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 
-namespace UnityAuxiliaryTools.Promises.Awaiter
+namespace AsyncReactAwait.Promises.Awaiter
 {
-    internal class PromiseAwaiter : BasePromiseAwaiter, IPromiseAwaiter
+    internal class PromiseAwaiter : BasePromiseAwaiter<IPromiseAwaiter>, IPromiseAwaiter
     {
 
         private IPromise _sourcePromise;
@@ -14,13 +14,18 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
             _sourcePromise = promise;
         }
 
+        public override IPromiseAwaiter GetAwaiter()
+        {
+            return this;
+        }
+
         public void GetResult() 
         {
             _sourcePromise.ThrowIfFailed();
         }
     }
 
-    internal class PromiseAwaiter<T> : BasePromiseAwaiter, IPromiseAwaiter<T>
+    internal class PromiseAwaiter<T> : BasePromiseAwaiter<IPromiseAwaiter<T>>, IPromiseAwaiter<T>
     {
 
         private readonly IPromise<T> _sourcePromise;
@@ -29,6 +34,11 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
             :base(promise, capturedContext)
         {
             _sourcePromise = promise;
+        }
+
+        public override IPromiseAwaiter<T> GetAwaiter()
+        {
+            return this;
         }
 
         public T GetResult()

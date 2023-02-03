@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityAuxiliaryTools.Promises
+namespace AsyncReactAwait.Promises
 {
     /// <summary>
     /// The interface to control promise completion.

@@ -1,7 +1,7 @@
 ﻿using System;
-using UnityAuxiliaryTools.Promises.Awaiter;
+using AsyncReactAwait.Promises.Awaiter;
 
-namespace UnityAuxiliaryTools.Promises
+namespace AsyncReactAwait.Promises
 {
     /// <summary>
     /// This is a base result independent callbacks for promises.
@@ -15,13 +15,13 @@ namespace UnityAuxiliaryTools.Promises
         bool IsCompleted { get; }
 
         /// <summary>
-        /// Callback will be executed in the Unity thread after the promise will fail.
+        /// Callback will be executed after the promise will fail.
         /// </summary>
         /// <param name="callback">A callback to execute</param>
         IBasePromise OnFail(Action<Exception> callback);
         
         /// <summary>
-        /// Callback will be executed in the Unity thread after the promise will success of fail.
+        /// Callback will be executed after the promise will success of fail.
         /// </summary>
         /// <param name="callback">A callback to execute</param>
         IBasePromise Finally(Action callback);

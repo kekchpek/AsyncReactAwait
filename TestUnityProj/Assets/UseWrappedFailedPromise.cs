@@ -1,5 +1,5 @@
 using System;
-using UnityAuxiliaryTools.Promises;
+using AsyncReactAwait.Promises;
 using UnityEngine;
 
 public class UseWrappedFailedPromise : MonoBehaviour

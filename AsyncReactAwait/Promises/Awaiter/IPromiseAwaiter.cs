@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace UnityAuxiliaryTools.Promises.Awaiter
+namespace AsyncReactAwait.Promises.Awaiter
 {
 
     /// <summary>
     /// An awaiter for promises with result.
     /// </summary>
-    public interface IPromiseAwaiter : IBasePromiseAwaiter
+    public interface IPromiseAwaiter : IBasePromiseAwaiter<IPromiseAwaiter>
     {
         /// <summary>
         /// Gets the promise result. Throw exception if promise is failed.
@@ -18,7 +18,7 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
     /// <summary>
     /// An awaiter for promises with result.
     /// </summary>
-    public interface IPromiseAwaiter<T> : IBasePromiseAwaiter
+    public interface IPromiseAwaiter<T> : IBasePromiseAwaiter<IPromiseAwaiter<T>>
     {
         /// <summary>
         /// Gets the promise result. Throw exception if promise is failed.

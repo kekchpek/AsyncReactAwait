@@ -1,7 +1,7 @@
 ﻿using System;
-using UnityAuxiliaryTools.Trigger.Awaiter;
+using AsyncReactAwait.Trigger.Awaiter;
 
-namespace UnityAuxiliaryTools.Trigger
+namespace AsyncReactAwait.Trigger
 {
 
     /// <summary>
@@ -26,7 +26,7 @@ namespace UnityAuxiliaryTools.Trigger
         /// </summary>
         /// <param name="captureContext">Should execution be executed with captured context.</param>
         /// <returns>The container for configured trigger awaiter.</returns>
-        IConfiguredTriggerAwaiterContainer ConfigureAwaiter(bool captureContext);
+        ITriggerAwaiter ConfigureAwaiter(bool captureContext);
     }
 
     /// <summary>
@@ -46,10 +46,17 @@ namespace UnityAuxiliaryTools.Trigger
         new ITriggerAwaiter<T> GetAwaiter();
 
         /// <summary>
+        /// Awaits until bindable value becomes some specific value.
+        /// </summary>
+        /// <param name="predicate">The predicate to determine required value.</param>
+        /// <returns>The awater for specified value.</returns>
+        ITriggerAwaiter<T> WillBe(Func<T, bool> predicate);
+
+        /// <summary>
         /// Gets a container for configured value-trigger awaiter.
         /// </summary>
         /// <param name="captureContext">Should execution be executed with captured context.</param>
         /// <returns>The container for configured value-trigger awaiter.</returns>
-        new IConfiguredTriggerAwaiterContainer<T> ConfigureAwaiter(bool captureContext);
+        new ITriggerAwaiter<T> ConfigureAwaiter(bool captureContext);
     }
 }

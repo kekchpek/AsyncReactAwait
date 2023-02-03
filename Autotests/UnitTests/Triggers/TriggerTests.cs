@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using UnityAuxiliaryTools.Trigger;
+using AsyncReactAwait.Trigger;
 
-namespace UnityAuxiliartyTools.Tests.Triggers
+namespace AsyncReactAwait.Tests.Triggers
 {
     public class TriggerTests
     {

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading;
 
-namespace UnityAuxiliaryTools.Trigger.Awaiter
+namespace AsyncReactAwait.Trigger.Awaiter
 {
-    internal class BaseTriggerAwaiter : IBaseTriggerAwaiter
+    internal abstract class BaseTriggerAwaiter<TConcrete> : IBaseTriggerAwaiter<TConcrete>
+        where TConcrete : IBaseTriggerAwaiter<TConcrete>
     {
 
         private readonly ITriggerHandler _trigger;
         private readonly SynchronizationContext _synchronizationContext;
 
         private bool _isCompleted;
+
+        private bool _captureContext;
 
         private event Action _onTriggerCompleted;
 
@@ -31,7 +34,7 @@ namespace UnityAuxiliaryTools.Trigger.Awaiter
         {
             _trigger.Triggered -= Complete;
             _isCompleted = true;
-            if (_synchronizationContext != null) {
+            if (_captureContext) {
                 _synchronizationContext.Send(_ => _onTriggerCompleted?.Invoke(), null);
             }
             else if (SynchronizationContext.Current != null)
@@ -42,6 +45,19 @@ namespace UnityAuxiliaryTools.Trigger.Awaiter
             {
                 _onTriggerCompleted?.Invoke();
             }
+        }
+
+        public TConcrete GetAwaiter()
+        {
+            return GetThis();
+        }
+
+        protected abstract TConcrete GetThis();
+
+        public TConcrete ConfigureAwaiter(bool captureContext)
+        {
+            _captureContext = captureContext;
+            return GetThis();
         }
     }
 }

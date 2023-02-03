@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using UnityAuxiliaryTools.Promises.Awaiter;
+using AsyncReactAwait.Promises.Awaiter;
 
-namespace UnityAuxiliaryTools.Promises
+namespace AsyncReactAwait.Promises
 {
 
     /// <inheritdoc cref="IControllablePromise"/>
@@ -53,12 +53,9 @@ namespace UnityAuxiliaryTools.Promises
         }
 
         /// <inheritdoc cref="IPromise.ConfigureAwait"/>
-        public IConfiguredPromiseAwaiterContainer ConfigureAwait(bool continueOnCapturedContext)
+        public IPromiseAwaiter ConfigureAwait(bool continueOnCapturedContext)
         {
-            if (continueOnCapturedContext)
-                return new ConfiguredPromiseAwaiterContainer(GetAwaiter());
-            else
-                return new ConfiguredPromiseAwaiterContainer(new PromiseAwaiter(this, null));
+            return GetAwaiter().ConfigureAwaiter(continueOnCapturedContext);
         }
 
         /// <inheritdoc cref="IPromise.ThrowIfFailed"/>
@@ -129,12 +126,9 @@ namespace UnityAuxiliaryTools.Promises
         }
 
         /// <inheritdoc cref="IPromise{T}.ConfigureAwait(bool)"/>
-        public IConfiguredPromiseAwaiterContainer<T> ConfigureAwait(bool continueOnCapturedContext)
+        public IPromiseAwaiter<T> ConfigureAwait(bool continueOnCapturedContext)
         {
-            if (continueOnCapturedContext)
-                return new ConfiguredPromiseAwaiterContainer<T>(GetAwaiter());
-            else
-                return new ConfiguredPromiseAwaiterContainer<T>(new PromiseAwaiter<T>(this, null));
+            return GetAwaiter().ConfigureAwaiter(continueOnCapturedContext);
         }
     }
 }

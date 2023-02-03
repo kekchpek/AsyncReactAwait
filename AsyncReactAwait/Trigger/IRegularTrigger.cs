@@ -1,4 +1,4 @@
-﻿namespace UnityAuxiliaryTools.Trigger
+﻿namespace AsyncReactAwait.Trigger
 {
 
     /// <summary>

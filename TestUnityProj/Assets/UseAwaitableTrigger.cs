@@ -1,6 +1,6 @@
 using System.Threading;
-using UnityAuxiliaryTools.Promises;
-using UnityAuxiliaryTools.Trigger;
+using AsyncReactAwait.Promises;
+using AsyncReactAwait.Trigger;
 using UnityEngine;
 
 public class UseAwaitableTrigger : MonoBehaviour

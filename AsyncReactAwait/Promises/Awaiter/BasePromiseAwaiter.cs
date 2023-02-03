@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading;
 
-namespace UnityAuxiliaryTools.Promises.Awaiter
+namespace AsyncReactAwait.Promises.Awaiter
 {
-    internal abstract class BasePromiseAwaiter : IBasePromiseAwaiter
+    internal abstract class BasePromiseAwaiter<T> : IBasePromiseAwaiter<T>
+        where T : IBasePromiseAwaiter<T>
     {
 
         private readonly IBasePromise _sourcePromise;
         private readonly SynchronizationContext _syncContext;
+
+        private bool _captureContext;
 
         protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext sincConnext)
         {
@@ -17,6 +20,13 @@ namespace UnityAuxiliaryTools.Promises.Awaiter
 
         public bool IsCompleted => _sourcePromise.IsCompleted;
 
+        public T ConfigureAwaiter(bool captureContext)
+        {
+            _captureContext = captureContext;
+            return GetAwaiter();
+        }
+
+        public abstract T GetAwaiter();
 
         public void OnCompleted(Action continuation)
         {

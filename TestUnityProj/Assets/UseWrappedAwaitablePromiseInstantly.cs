@@ -1,4 +1,4 @@
-using UnityAuxiliaryTools.Promises;
+using AsyncReactAwait.Promises;
 using UnityEngine;
 
 public class UseWrappedAwaitablePromiseInstantly : MonoBehaviour

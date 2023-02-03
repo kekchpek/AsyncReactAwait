@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace UnityAuxiliaryTools.Trigger.Awaiter
+﻿namespace AsyncReactAwait.Trigger.Awaiter
 {
 
     /// <summary>
     /// Interface for awaiter for trigger.
     /// </summary>
-    public interface ITriggerAwaiter : IBaseTriggerAwaiter
+    public interface ITriggerAwaiter : IBaseTriggerAwaiter<ITriggerAwaiter>
     {
 
         /// <summary>
@@ -21,7 +17,7 @@ namespace UnityAuxiliaryTools.Trigger.Awaiter
     /// <summary>
     /// Interface for awaiter for trigger.
     /// </summary>
-    public interface ITriggerAwaiter<T> : IBaseTriggerAwaiter
+    public interface ITriggerAwaiter<T> : IBaseTriggerAwaiter<ITriggerAwaiter<T>>
     {
 
         /// <summary>

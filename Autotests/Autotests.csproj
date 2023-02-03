@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnityAuxiliaryTools\UnityAuxiliaryTools.csproj" />
+    <ProjectReference Include="..\AsyncReactAwait\AsyncReactAwait.csproj" />
   </ItemGroup>
 
 </Project>

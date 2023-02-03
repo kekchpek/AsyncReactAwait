@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NSubstitute;
-using UnityAuxiliaryTools.Promises;
+using AsyncReactAwait.Promises;
 
 namespace SocialDemo.Code.Tests.EditMode.TestUtils
 {
