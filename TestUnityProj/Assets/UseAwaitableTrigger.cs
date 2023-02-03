@@ -30,7 +30,7 @@ public class UseAwaitableTrigger : MonoBehaviour
             _done = true;
             var thread = new Thread(() =>
             {
-                _moveTrigger.Trigger(Vector3.up);
+                _moveTrigger.Trigger(Vector3.up * 3f);
             });
             thread.Start();
         }

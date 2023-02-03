@@ -12,7 +12,7 @@ public class UseAwaitablePromise : MonoBehaviour
     {
         _movePromise = new ControllablePromise();
         await AwaitMovePromise(_movePromise);
-        transform.position += Vector3.up * 2f;
+        transform.position += Vector3.up * 3f;
     }
 
     private async IPromise AwaitMovePromise(IPromise p)
@@ -27,7 +27,10 @@ public class UseAwaitablePromise : MonoBehaviour
         {
             var thread = new Thread(() =>
             {
-                _movePromise.Success();
+                if (!_movePromise.IsCompleted)
+                {
+                    _movePromise.Success();
+                }
             });
             thread.Start();
         }
