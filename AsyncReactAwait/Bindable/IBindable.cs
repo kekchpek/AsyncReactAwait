@@ -35,6 +35,13 @@ namespace AsyncReactAwait.Bindable
         void Bind(Action handler, bool callImmediately = true);
 
         /// <summary>
+        /// <inheritdoc cref="Bind(System.Action{T},bool)"/>
+        /// </summary>
+        /// <param name="handler"><inheritdoc cref="Bind(System.Action{T},bool)"/> It handles previous and new value.</param>
+        /// <exception cref="ArgumentNullException"><inheritdoc cref="Bind(System.Action{T},bool)"/></exception>
+        void Bind(Action<T, T> handler);
+
+        /// <summary>
         /// Unbinds the value changing handler.
         /// </summary>
         /// <param name="handler">Value changing handler.</param>
@@ -42,6 +49,9 @@ namespace AsyncReactAwait.Bindable
 
         /// <inheritdoc cref="Unbind(Action{T})"/>
         void Unbind(Action handler);
+
+        /// <inheritdoc cref="Unbind(Action{T})"/>
+        void Unbind(Action<T, T> handler);
 
     }
 }

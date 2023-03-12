@@ -15,19 +15,13 @@ namespace AsyncReactAwait.Bindable
 
         private event Action<T> _onChange;
         private event Action _onChangeBlind;
+        private event Action<T, T> _onChangeFull;
 
         /// <inheritdoc cref="IMutable{T}.Value"/>
         public T Value
         {
             get => _value;
-            set
-            {
-                if (Equals(_value, value))
-                    return;
-                _value = value;
-                _onChangeBlind?.Invoke();
-                _onChange?.Invoke(_value);
-            }
+            set => Set(value);
         }
 
         T IBindable<T>.Value => _value;
@@ -39,6 +33,25 @@ namespace AsyncReactAwait.Bindable
         public Mutable([AllowNull] T initialValue = default)
         {
             _value = initialValue;
+        }
+
+
+        /// <inheritdoc />
+        public void Set(T value)
+        {
+            if (Equals(_value, value))
+                return;
+            ForceSet(value);
+        }
+
+        /// <inheritdoc />
+        public void ForceSet(T value)
+        {
+            var previousVal = _value;
+            _value = value;
+            _onChangeBlind?.Invoke();
+            _onChangeFull?.Invoke(previousVal, _value);
+            _onChange?.Invoke(_value);
         }
 
         /// <inheritdoc cref="IBindable{T}.Bind(Action{T}, bool)"/>
@@ -73,6 +86,17 @@ namespace AsyncReactAwait.Bindable
             }
         }
 
+        /// <inheritdoc />
+        public void Bind(Action<T, T> handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            _onChangeFull += handler;
+        }
+
         /// <inheritdoc cref="IBindable{T}.Unbind(Action{T})"/>
         public void Unbind(Action<T> handler)
         {
@@ -83,6 +107,12 @@ namespace AsyncReactAwait.Bindable
         public void Unbind(Action handler)
         {
             _onChangeBlind -= handler;
+        }
+
+        /// <inheritdoc />
+        public void Unbind(Action<T, T> handler)
+        {
+            _onChangeFull += handler;
         }
 
         /// <inheritdoc cref="IBindable{T}.WillBe(Func{T, bool}, bool)"/>
