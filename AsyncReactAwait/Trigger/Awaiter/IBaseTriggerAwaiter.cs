@@ -5,7 +5,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
     /// <summary>
     /// Base inteface for awaiter for trigger.
     /// </summary>
-    public interface IBaseTriggerAwaiter<out TConcrete> : INotifyCompletion
+    public interface IBaseTriggerAwaiter<out TConcrete> : ICriticalNotifyCompletion
         where TConcrete : IBaseTriggerAwaiter<TConcrete>
     {
 

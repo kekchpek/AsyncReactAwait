@@ -17,7 +17,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
 
         public bool IsCompleted => _isCompleted;
 
-        public BaseTriggerAwaiter(SynchronizationContext context) 
+        protected BaseTriggerAwaiter(SynchronizationContext context) 
         {
             _synchronizationContext = context;
         }
@@ -25,6 +25,11 @@ namespace AsyncReactAwait.Trigger.Awaiter
         public void OnCompleted(Action continuation)
         {
             _onTriggerCompleted += continuation;
+        }
+
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            OnCompleted(continuation);
         }
 
         protected void Complete()
