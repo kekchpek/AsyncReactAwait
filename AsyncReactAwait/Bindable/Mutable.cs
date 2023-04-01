@@ -89,12 +89,7 @@ namespace AsyncReactAwait.Bindable
         /// <inheritdoc />
         public void Bind(Action<T, T> handler)
         {
-            if (handler == null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
-
-            _onChangeFull += handler;
+            _onChangeFull -= handler;
         }
 
         /// <inheritdoc cref="IBindable{T}.Unbind(Action{T})"/>

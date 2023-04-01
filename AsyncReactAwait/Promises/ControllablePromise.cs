@@ -62,7 +62,7 @@ namespace AsyncReactAwait.Promises
         public void ThrowIfFailed()
         {
             if (FailException != null)
-                throw FailException;
+                throw new Exception("Promise failed", FailException);
         }
     }
 
