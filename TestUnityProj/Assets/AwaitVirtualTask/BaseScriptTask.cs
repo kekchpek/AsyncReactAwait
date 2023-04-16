@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using ILogger = AsyncReactAwait.Logging.ILogger;
+using Logger = AsyncReactAwait.Logging.Logger;
 
 namespace AwaitVirtualPromise
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using AsyncReactAwait.Logging;
 
 namespace AsyncReactAwait.Promises.Awaiter
 {
@@ -11,16 +12,20 @@ namespace AsyncReactAwait.Promises.Awaiter
         public PromiseAwaiter(IPromise promise, SynchronizationContext capturedContext)
             : base(promise, capturedContext)
         {
+            Logger.Log($"PromiseAwaiter constructor promise = {promise?.GetHashCode()}");
+            Logger.Log($"PromiseAwaiter constructor capturedContext = {capturedContext?.GetHashCode()}");
             _sourcePromise = promise;
         }
 
         public override IPromiseAwaiter GetAwaiter()
         {
+            Logger.Log($"GetAwaiter");
             return this;
         }
 
         public void GetResult() 
         {
+            Logger.Log($"GetResult");
             _sourcePromise.ThrowIfFailed();
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
+using AsyncReactAwait.Logging;
 
 namespace AsyncReactAwait.Promises.Awaiter
 {
@@ -12,16 +14,19 @@ namespace AsyncReactAwait.Promises.Awaiter
 
         private bool _captureContext = true;
 
-        protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext sincConnext)
+        protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext syncContext)
         {
+            Logger.Log($"BasePromiseAwaiter constructor sourcePromise = {sourcePromise?.GetHashCode()}");
+            Logger.Log($"BasePromiseAwaiter constructor syncContext = {syncContext?.GetHashCode()}");
             _sourcePromise = sourcePromise;
-            _syncContext = sincConnext;
+            _syncContext = syncContext;
         }
 
         public bool IsCompleted => _sourcePromise.IsCompleted;
 
         public T ConfigureAwaiter(bool captureContext)
         {
+            Logger.Log($"ConfigureAwaiter captureContext = {captureContext}");
             _captureContext = captureContext;
             return GetAwaiter();
         }
@@ -30,6 +35,7 @@ namespace AsyncReactAwait.Promises.Awaiter
 
         public void OnCompleted(Action continuation)
         {
+            Logger.Log($"OnCompleted continuation = {continuation?.GetHashCode()}");
             if (continuation == null)
             {
                 return;
@@ -56,6 +62,7 @@ namespace AsyncReactAwait.Promises.Awaiter
 
         public void UnsafeOnCompleted(Action continuation)
         {
+            Logger.Log($"UnsafeOnCompleted continuation = {continuation?.GetHashCode()}");
             OnCompleted(continuation);
         }
     }
