@@ -1,14 +1,14 @@
-using AsyncReactAwait.Promises;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace AwaitVirtualPromise
 {
-    public class MainScript : BaseScript
+    public class MainScriptTask : BaseScriptTask
     {
 
         [SerializeField] private Image _image2;
-        [SerializeField] private AwaitableBehaviour _awaitable;
+        [SerializeField] private AwaitableTaskBehaviour _awaitable;
 
         protected override void Awake()
         {
@@ -18,7 +18,7 @@ namespace AwaitVirtualPromise
             Debug.Log("@@@ Awake Child - finish");
         }
         
-        protected override async IPromise ShowIntro()
+        protected override async Task ShowIntro()
         {
             Debug.Log("@@@ ShowIntro Child - start");
             await base.ShowIntro();
