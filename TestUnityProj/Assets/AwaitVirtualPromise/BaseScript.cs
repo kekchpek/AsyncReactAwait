@@ -6,7 +6,6 @@ namespace AwaitVirtualPromise
 {
     public abstract class BaseScript : MonoBehaviour
     {
-
         private IControllablePromise _controllablePromise = new ControllablePromise();
 
         [SerializeField] private Image _image;
