@@ -1,34 +1,32 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AsyncReactAwait.Logging;
 
 namespace AsyncReactAwait.Promises.AsyncMethodBuilder
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public struct AsyncPromiseMethodBuilder
     {
-
         public static AsyncPromiseMethodBuilder Create()
         {
-            Logger.Log($"Create");
-            return new AsyncPromiseMethodBuilder();
+            return new AsyncPromiseMethodBuilder()
+            {
+                _promise = new ControllablePromise(),
+            };
         }
 
         private IControllablePromise _promise;
 
-        public IPromise Task => TaskInternal;
+        public IPromise Task => _promise;
 
-        private IControllablePromise TaskInternal => _promise ??= new ControllablePromise();
 
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
-            Logger.Log($"State machine set = {stateMachine}");
+            // do nothing
         }
 
         public void Start<TStateMachine>(ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
-            Logger.Log($"Move next state machine = {stateMachine?.GetHashCode()}");
             stateMachine.MoveNext();
         }
 
@@ -36,8 +34,6 @@ namespace AsyncReactAwait.Promises.AsyncMethodBuilder
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            Logger.Log($"AwaitUnsafeOnCompleted state machine = {stateMachine?.GetHashCode()}");
-            Logger.Log($"AwaitUnsafeOnCompleted state machine = {awaiter?.GetHashCode()}");
             awaiter.UnsafeOnCompleted(stateMachine.MoveNext);
         }
 
@@ -45,21 +41,17 @@ namespace AsyncReactAwait.Promises.AsyncMethodBuilder
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            Logger.Log($"AwaitOnCompleted state machine = {stateMachine?.GetHashCode()}");
-            Logger.Log($"AwaitOnCompleted state machine = {awaiter?.GetHashCode()}");
             awaiter.OnCompleted(stateMachine.MoveNext);
         }
 
         public void SetException(Exception exception)
         {
-            Logger.Log($"Set exception = {exception?.Message}");
-            TaskInternal.Fail(exception);
+            _promise.Fail(exception);
         }
 
         public void SetResult()
         {
-            Logger.Log($"Set result");
-            TaskInternal.Success();
+            _promise.Success();
         }
 
     }
@@ -70,14 +62,15 @@ namespace AsyncReactAwait.Promises.AsyncMethodBuilder
 
         public static AsyncPromiseMethodBuilder<T> Create()
         {
-            return new AsyncPromiseMethodBuilder<T>();
+            return new AsyncPromiseMethodBuilder<T>()
+            {
+                _promise = new ControllablePromise<T>(),
+            };
         }
 
         private IControllablePromise<T> _promise;
         
-        public IPromise<T> Task => TaskInternal;
-
-        private IControllablePromise<T> TaskInternal => _promise ??= new ControllablePromise<T>();
+        public IPromise<T> Task => _promise;
 
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
@@ -105,12 +98,12 @@ namespace AsyncReactAwait.Promises.AsyncMethodBuilder
 
         public void SetException(Exception exception)
         {
-            TaskInternal.Fail(exception);
+            _promise.Fail(exception);
         }
 
         public void SetResult(T result)
         {
-            TaskInternal.Success(result);
+            _promise.Success(result);
         }
 
     }

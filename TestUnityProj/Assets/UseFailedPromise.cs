@@ -20,7 +20,6 @@ namespace DefaultNamespace
             }
             catch(Exception e)
             {
-                Debug.LogException(e);
                 transform.position += Vector3.up * 3f;
             }
         }
