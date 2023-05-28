@@ -18,7 +18,10 @@ namespace AsyncReactAwait.Promises
             lock (this)
             {
                 if (IsCompleted)
+                {
                     throw new InvalidOperationException("Promise is already completed!");
+                }
+
                 foreach (var callback in _successCallbacks)
                 {
                     callback?.Invoke();
@@ -114,7 +117,7 @@ namespace AsyncReactAwait.Promises
         public bool TryGetResult(out T result)
         {
             if (FailException != null)
-                throw FailException;
+                throw new Exception("Promise failed!", FailException);
             result = _result;
             return _resultSet;
         }
