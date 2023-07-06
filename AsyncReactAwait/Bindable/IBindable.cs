@@ -17,13 +17,6 @@ namespace AsyncReactAwait.Bindable
         T Value { get; }
 
         /// <summary>
-        /// Awaits for specific value.
-        /// </summary>
-        /// <param name="predicate">The specific value awaiter.</param>
-        /// <param name="checkCurrentValue">False if you don't want to check current value</param>
-        IBindableAwaiter<T> WillBe(Func<T, bool> predicate, bool checkCurrentValue = true);
-
-        /// <summary>
         /// Bind a handler for value changing.
         /// </summary>
         /// <param name="handler">Value changing handler.</param>

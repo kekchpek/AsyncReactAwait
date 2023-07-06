@@ -109,11 +109,5 @@ namespace AsyncReactAwait.Bindable
         {
             _onChangeFull += handler;
         }
-
-        /// <inheritdoc cref="IBindable{T}.WillBe(Func{T, bool}, bool)"/>
-        public IBindableAwaiter<T> WillBe(Func<T, bool> predicate, bool checkCurrentValue = true)
-        {
-            return new BindableAwaiter<T>(this, SynchronizationContext.Current, predicate, checkCurrentValue);
-        }
     }
 }
