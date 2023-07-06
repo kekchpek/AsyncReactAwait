@@ -36,27 +36,6 @@ namespace AsyncReactAwait.Bindable.BindableExtensions
         }
 
         /// <summary>
-        /// Casts bindable value to other type
-        /// </summary>
-        /// <param name="bindable">Bindable to cast.</param>
-        /// <typeparam name="T">Type to cast.</typeparam>
-        /// <typeparam name="TSource">Type of bindable.</typeparam>
-        /// <returns>New casted bindable object.</returns>
-        /// <exception cref="InvalidCastException"></exception>
-        public static IBindable<T> Cast<T, TSource>(this IBindable<TSource> bindable)
-        {
-            return new BindableDecorator<T, TSource>(bindable, x =>
-            {
-                if (x is T castedX)
-                {
-                    return castedX;
-                }
-
-                throw new InvalidCastException($"Can not cast {typeof(TSource)} to {typeof(T)}");
-            });
-        }
-
-        /// <summary>
         /// Converts bindable value to some other value, that depends on source bindable.
         /// </summary>
         /// <param name="bindable">The bindable to convert.</param>

@@ -3,17 +3,18 @@ using AsyncReactAwait.Bindable;
 using AsyncReactAwait.Bindable.BindableExtensions;
 using UnityEngine;
 
-public class UseBindable : MonoBehaviour
+public class UseCastedBindable : MonoBehaviour
 {
-    private IMutable<int> _counter = new Mutable<int>();
-    private IBindable<int> Counter => _counter;
+    private readonly IMutable<float> _counter = new Mutable<float>();
+    private IBindable<int> Counter { get; set; }
 
     private Thread _t;
-    
+
     // Start is called before the first frame update
     private async void Start()
     {
-        _counter.Value = 10000000;
+        Counter = _counter.ConvertTo(x => (int)x);
+        _counter.Value = 1;
         _t = new Thread(ParallelExecution);
         _t.Start();
         transform.position += Vector3.up * await Counter.WillBeEqual(3);
@@ -22,9 +23,10 @@ public class UseBindable : MonoBehaviour
     private void ParallelExecution()
     {
         Thread.Sleep(100);
-        while (_counter.Value > -100)
+        for (int i = 0; i < 5; i++)
         {
-            _counter.Value--;
+            _counter.Value = 1;
+            _counter.Value = 3;
         }
     }
 

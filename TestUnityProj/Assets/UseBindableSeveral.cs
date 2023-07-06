@@ -1,6 +1,6 @@
 using System.Threading;
 using AsyncReactAwait.Bindable;
-using AsyncReactAwait.Bindable.BindableExtensiosn;
+using AsyncReactAwait.Bindable.BindableExtensions;
 using UnityEngine;
 
 public class UseBindableSeveral : MonoBehaviour

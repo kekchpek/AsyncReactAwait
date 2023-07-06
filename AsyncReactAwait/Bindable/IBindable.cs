@@ -8,7 +8,7 @@ namespace AsyncReactAwait.Bindable
     /// Value, changes of which could be handled with binded handlers.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IBindable<T>
+    public interface IBindable<out T>
     {
 
         /// <summary>
