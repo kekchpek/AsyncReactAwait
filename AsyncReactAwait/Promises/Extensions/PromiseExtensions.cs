@@ -15,6 +15,7 @@ namespace AsyncReactAwait.Promises.Extensions
         {
             var outcome = new ControllablePromise();
             promise.OnSuccess(_ => outcome.Success());
+            promise.OnFail(e => outcome.Fail(e));
             return outcome;
         }
     }
