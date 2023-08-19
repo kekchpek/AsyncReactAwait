@@ -47,6 +47,42 @@ namespace AsyncReactAwait.Bindable.BindableExtensions
         {
             return new BindableDecorator<T, TSource>(bindable, predicate);
         }
+        
+        /// <summary>
+        /// Sets the value.
+        /// </summary>
+        /// <param name="mutable">Mutable to extend.</param>
+        /// <param name="value">New value.</param>
+        public static void Set<T>(this IMutable<T> mutable, T value)
+        {
+            mutable.Value = value;
+        }
+        
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <param name="bindable">Bindable to extend.</param>
+        /// <param name="value">New value.</param>
+        public static T Get<T>(this IBindable<T> bindable, T value)
+        {
+            return bindable.Value;
+        }
+
+        /// <summary>
+        /// Aggregates bindable with other bindable value
+        /// </summary>
+        /// <param name="bindable1">The first bindable to aggregate.</param>
+        /// <param name="bindable2">The second bindable to aggregate.</param>
+        /// <param name="aggregator">An aggregation function.</param>
+        /// <typeparam name="T1">A type of the first bindable value.</typeparam>
+        /// <typeparam name="T2">A type of the second bindable value.</typeparam>
+        /// <typeparam name="TRes">The type of the result of the aggregation.</typeparam>
+        /// <returns>An aggregated bindable.</returns>
+        public static IBindable<TRes> AggregateWith<T1, T2, TRes>(this IBindable<T1> bindable1, IBindable<T2> bindable2,
+            Func<T1, T2, TRes> aggregator)
+        {
+            return Bindable.Aggregate(bindable1, bindable2, aggregator);
+        }
 
     }
 }
