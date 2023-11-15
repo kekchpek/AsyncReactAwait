@@ -43,8 +43,6 @@ jobs:
           echo "newVersion=$newVersion"
           echo "newVersion=$newVersion" >> $GITHUB_ENV
         sed -i '' -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1${{env.newVersion}}\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
-        echo "BUILD_VERSION=${{env.newVersion}}" >> $GITHUB_ENV
-        echo "Buid version is $BUILD_VERSION"
     - name: Test
       run: dotnet test src --verbosity normal
     - name: Build
@@ -68,7 +66,7 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1.13.0
       with:
-        tag: ${{ env.BUILD_VERSION }}
-        name: Release ${{ env.BUILD_VERSION }}
+        tag: ${{ env.newVersion }}
+        name: Release ${{ env.newVersion }}
         artifacts: "src/build/*.nupkg, AsyncReactAwait.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
