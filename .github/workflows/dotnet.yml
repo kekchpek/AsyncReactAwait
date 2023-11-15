@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -15,34 +15,61 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core SDK 3.1.x
-      uses: actions/setup-dotnet@v1.7.2
+    - name: Setup .NET Core SDK 7
+      uses: actions/setup-dotnet@v3.2.0
       with:
-        dotnet-version: '3.1.x'
-    - name: Set version
+        dotnet-version: '7.0.x'
+    - name: Configure version
       run: |
-       sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.run_number}}/" AsyncReactAwait/AsyncReactAwait.csproj
-       echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" AsyncReactAwait/AsyncReactAwait.csproj)" >> $GITHUB_ENV
+        git fetch --unshallow
+        lastTag=$(git describe --tags --abbrev=0)
+        lastTagMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <<<"$lastTag")
+        currentVersion=$(cat VERSION)
+        currentMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <VERSION)
+        if [ "$lastTagMainVersion" = "$currentMainVersion" ]
+        then
+          echo "Version the same."
+          lastTagBuildVersion=$(sed -n 's/^[0-9]*\.[0-9]*\.\([0-9]*\).*/\1/p' <<<"$lastTag")
+          newBuildVersion=$((lastTagBuildVersion+1))
+          newVersion="$lastTagMainVersion"."$newBuildVersion"
+          echo "newVersion=$newVersion"
+          echo "newVersion=$newVersion" >> $GITHUB_ENV
+        else
+          echo "New version!"
+          newVersion="$currentMainVersion".1
+          VersionPrefix=$newVersion
+          echo "newVersion=$newVersion"
+          echo "newVersion=$newVersion" >> $GITHUB_ENV
+        fi
+       sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.newVersion}}/" src/AsyncReactAwait/AsyncReactAwait.csproj
+       echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" src/AsyncReactAwait/AsyncReactAwait.csproj)" >> $GITHUB_ENV
        echo "Buid version is $BUILD_VERSION"
     - name: Restore .Net
       run: dotnet restore
     - name: Test
       run: dotnet test --verbosity normal
     - name: Build
-      run: dotnet build AsyncReactAwait/AsyncReactAwait.csproj --no-dependencies --output build
+      run: dotnet build src/AsyncReactAwait/AsyncReactAwait.csproj --no-dependencies --output src/build
     - name: Publish package to GitHub
+      if: github.ref == 'refs/heads/master'
       run: |
        dotnet nuget add source --username kekchpek --password ${{ secrets.PAT_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/kekchpek/index.json"
        dotnet nuget push build/*.nupkg --api-key ${{secrets.PAT_TOKEN}} --source github
     - name: Publish package to Nuget
+      if: github.ref == 'refs/heads/master'
       run: |
        dotnet nuget push build/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
     - name: Zip build
-      run: zip AsyncReactAwait.zip build/AsyncReactAwait.dll build/AsyncReactAwait.xml
+      run: zip AsyncReactAwait.zip src/build/AsyncReactAwait.dll src/build/AsyncReactAwait.xml
+    - name: Tag non-release
+      if: github.ref != 'refs/heads/master'
+      run: |
+        git tag ${{ env.newVersion }}
+        git push --tags
     - name: Create Release
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.13.0
       with:
         tag: ${{ env.BUILD_VERSION }}
         name: Release ${{ env.BUILD_VERSION }}
-        artifacts: "build/*.nupkg, AsyncReactAwait.zip"
+        artifacts: "src/build/*.nupkg, AsyncReactAwait.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
