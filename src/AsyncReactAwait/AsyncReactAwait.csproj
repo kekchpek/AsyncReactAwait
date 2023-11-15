@@ -8,6 +8,7 @@
 	<Description>The tools for building reactive async code.</Description>
 	<PackageProjectUrl>https://github.com/kekchpek/AsyncReactAwait</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/kekchpek/AsyncReactAwait</RepositoryUrl>
 	<RepositoryType />
 	<LangVersion>9</LangVersion>
@@ -17,11 +18,17 @@
     <DocumentationFile>obj\AsyncReactAwait.xml</DocumentationFile>
   </PropertyGroup>
 
+
+
   <ItemGroup>
-    <None Include="..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+      <None Include="../../LICENSE.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
+      <None Include="../..\README.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
   </ItemGroup>
 
 </Project>
