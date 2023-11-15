@@ -26,6 +26,7 @@ jobs:
         git fetch --unshallow
         lastTag=$(git describe --tags --abbrev=0)
         lastTagMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <<<"$lastTag")
+        echo Last tag version is $lastTagMainVersion
         currentVersion=$(cat VERSION)
         echo Current version is $currentVersion
         currentMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <VERSION)
