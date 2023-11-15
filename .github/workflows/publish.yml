@@ -1,4 +1,4 @@
-name: .NET
+name: publish
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
         echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" src/AsyncReactAwait/AsyncReactAwait.csproj)" >> $GITHUB_ENV
         echo "Buid version is $BUILD_VERSION"
     - name: Test
-      run: dotnet test --verbosity normal
+      run: dotnet test src --verbosity normal
     - name: Build
       run: dotnet build src/AsyncReactAwait/AsyncReactAwait.csproj --no-dependencies --output src/build
     - name: Publish package to GitHub
