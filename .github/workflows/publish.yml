@@ -14,7 +14,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET Core SDK 7
       uses: actions/setup-dotnet@v3.2.0
       with:
@@ -74,3 +74,8 @@ jobs:
         name: Release ${{ env.newVersion }}
         artifacts: "src/build/*.nupkg, AsyncReactAwait.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Expose as artifact
+      uses: actions/upload-artifact@v3.1.3
+      with:
+       name: Build
+       path: src/AsyncReactAwait/build
