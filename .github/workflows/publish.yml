@@ -42,12 +42,6 @@ jobs:
           VersionPrefix=$newVersion
           echo "newVersion=$newVersion"
           echo "newVersion=$newVersion" >> $GITHUB_ENV
-        fi
-        ls
-        cd src
-        ls
-        cd AsyncReactAwait
-        ls
         sed -i '' -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1${{env.newVersion}}\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
         echo "BUILD_VERSION=${{env.newVersion}}" >> $GITHUB_ENV
         echo "Buid version is $BUILD_VERSION"
