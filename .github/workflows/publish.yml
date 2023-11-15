@@ -45,6 +45,7 @@ jobs:
           VersionPrefix=$newVersion
           echo "newVersion=$newVersion"
           echo "newVersion=$newVersion" >> $GITHUB_ENV
+        fi
         sed -i '' -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1${{env.newVersion}}\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
     - name: Test
       run: dotnet test src --verbosity normal
