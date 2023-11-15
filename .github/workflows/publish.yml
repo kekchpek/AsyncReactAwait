@@ -43,8 +43,8 @@ jobs:
           echo "newVersion=$newVersion"
           echo "newVersion=$newVersion" >> $GITHUB_ENV
         fi
-        sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.newVersion}}/" src/AsyncReactAwait/AsyncReactAwait.csproj
-        echo "BUILD_VERSION=$(sed -n "s/\(.*<Version>\)\(\([0-9]\+\.\?\)\{3\}\)\(<\/Version>\)/\2/p" src/AsyncReactAwait/AsyncReactAwait.csproj)" >> $GITHUB_ENV
+        sed -i '' -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1${{env.newVersion}}\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
+        echo "BUILD_VERSION=${{env.newVersion}}" >> $GITHUB_ENV
         echo "Buid version is $BUILD_VERSION"
     - name: Test
       run: dotnet test src --verbosity normal
