@@ -15,10 +15,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core SDK 3.1.x
-      uses: actions/setup-dotnet@v1.7.2
+    - name: Setup .NET Core SDK 7
+      uses: actions/setup-dotnet@v3.2.0
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: '7.0.x'
     - name: Set version
       run: |
        sed -i "s/\(<Version>\([0-9]*\.\)\{2\}\)\([0-9]\)/\1${{github.run_number}}/" AsyncReactAwait/AsyncReactAwait.csproj
@@ -40,7 +40,7 @@ jobs:
     - name: Zip build
       run: zip AsyncReactAwait.zip build/AsyncReactAwait.dll build/AsyncReactAwait.xml
     - name: Create Release
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.13.0
       with:
         tag: ${{ env.BUILD_VERSION }}
         name: Release ${{ env.BUILD_VERSION }}
