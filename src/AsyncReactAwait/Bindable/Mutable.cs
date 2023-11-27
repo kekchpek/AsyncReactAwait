@@ -134,7 +134,7 @@ namespace AsyncReactAwait.Bindable
         /// <inheritdoc />
         public void Unbind(Action<T, T> handler)
         {
-            OnChangeFull += handler;
+            OnChangeFull -= handler;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using AsyncReactAwait.Bindable;
 using AsyncReactAwait.Bindable.BindableExtensions;
 using NUnit.Framework;
@@ -81,6 +82,29 @@ public class BindableTests
         // Assert
         Assert.AreEqual(prevVal, 100);
         Assert.AreEqual(newVal, 200);
+    }
+
+    [Test]
+    public void UnbindFull()
+    {
+        // Arrange
+        var bindable = new Mutable<int>(100);
+        int? prevVal = null;
+        int? newVal = null;
+        
+        // Act
+        Action<int, int> handler = (p, n) =>
+        {
+            prevVal = p;
+            newVal = n;
+        };
+        bindable.Bind(handler);
+        bindable.Unbind(handler);
+        bindable.Set(200);
+        
+        // Assert
+        Assert.AreEqual(prevVal, null);
+        Assert.AreEqual(newVal, null);
     }
     
 }
