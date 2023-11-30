@@ -6,7 +6,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
     internal class TriggerAwaiter : BaseTriggerAwaiter<ITriggerAwaiter>, ITriggerAwaiter
     {
 
-        private ITriggerHandler _trigger;
+        private readonly ITriggerHandler _trigger;
 
         public TriggerAwaiter(ITriggerHandler trigger, SynchronizationContext context) : base(context)
         {
@@ -35,13 +35,13 @@ namespace AsyncReactAwait.Trigger.Awaiter
 
         private readonly ITriggerHandler<T> _trigger;
         private readonly Func<T, bool> _predicate;
-        private T _triggerData;
-        private bool _triggerDataSet = false;
+        private T? _triggerData;
+        private bool _triggerDataSet;
 
-        public TriggerAwaiter(ITriggerHandler<T> trigger, SynchronizationContext context, Func<T, bool> predicate) : base(context)
+        public TriggerAwaiter(ITriggerHandler<T> trigger, SynchronizationContext? context, Func<T, bool> predicate) : base(context)
         {
-            _trigger = trigger;
-            _predicate = predicate;
+            _trigger = trigger ?? throw new ArgumentNullException(nameof(trigger));
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
             _trigger.Triggered += TriggerActivated;
         }
 
@@ -49,7 +49,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
         {
             if (_triggerDataSet)
             {
-                return _triggerData;
+                return _triggerData!;
             }
             throw new Exception("Trigger data not set");
         }
@@ -61,7 +61,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
 
         private void TriggerActivated(T obj)
         {
-            if (_predicate == null || _predicate.Invoke(obj))
+            if (_predicate.Invoke(obj))
             {
                 _trigger.Triggered -= TriggerActivated;
                 _triggerDataSet = true;

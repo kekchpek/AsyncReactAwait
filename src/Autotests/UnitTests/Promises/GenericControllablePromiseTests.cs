@@ -19,7 +19,7 @@ namespace Autotests.UnitTests.Promises
             var promise = CreatePromise();
             
             // Act
-            var retVal = promise.OnSuccess(x => { });
+            var retVal = promise.OnSuccess(_ => { });
             
             // Assert
             Assert.AreEqual(promise, retVal);

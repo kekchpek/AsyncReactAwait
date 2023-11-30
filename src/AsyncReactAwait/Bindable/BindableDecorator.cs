@@ -8,7 +8,7 @@ namespace AsyncReactAwait.Bindable
         private readonly IBindable<TSource> _bindable;
         private readonly Func<TSource, T> _predicate;
 
-        private new Dictionary<Delegate, Delegate> _handlersMap = new Dictionary<Delegate, Delegate>();
+        private readonly Dictionary<Delegate, Delegate> _handlersMap = new();
 
         public T Value => _predicate(_bindable.Value);
 

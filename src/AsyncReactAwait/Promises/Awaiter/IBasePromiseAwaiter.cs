@@ -5,7 +5,7 @@ namespace AsyncReactAwait.Promises.Awaiter
     /// <summary>
     /// Base API for promise awaiter.
     /// </summary>
-    public interface IBasePromiseAwaiter<T> : INotifyCompletion, ICriticalNotifyCompletion
+    public interface IBasePromiseAwaiter<out T> : ICriticalNotifyCompletion
         where T : IBasePromiseAwaiter<T>
     {
         /// <summary>

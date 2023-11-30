@@ -34,11 +34,12 @@ namespace AsyncReactAwait.Promises
         /// <inheritdoc cref="IPromise.OnSuccess(Action)"/>
         public IPromise OnSuccess(Action callback)
         {
+            if (callback == null) throw new ArgumentNullException(nameof(callback));
             lock (this)
             {
                 if (IsCompleted)
                 {
-                    callback?.Invoke();
+                    callback.Invoke();
                 }
                 else
                 {
@@ -74,7 +75,7 @@ namespace AsyncReactAwait.Promises
     {
         private readonly IList<Action<T>> _successCallbacks = new List<Action<T>>();
 
-        private T _result;
+        private T? _result;
         private bool _resultSet;
 
         /// <inheritdoc cref="IControllablePromise{T}.Success(T)"/>
@@ -102,7 +103,7 @@ namespace AsyncReactAwait.Promises
             {
                 if (_resultSet)
                 {
-                    callback?.Invoke(_result);
+                    callback.Invoke(_result!);
                 }
                 else
                 {
@@ -114,7 +115,7 @@ namespace AsyncReactAwait.Promises
         }
 
         /// <inheritdoc cref="IPromise{T}.TryGetResult(out T)"/>
-        public bool TryGetResult(out T result)
+        public bool TryGetResult(out T? result)
         {
             if (FailException != null)
                 throw new Exception("Promise failed!", FailException);

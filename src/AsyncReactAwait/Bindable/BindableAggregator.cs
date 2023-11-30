@@ -19,10 +19,10 @@ namespace AsyncReactAwait.Bindable
 
         private bool _subscribed;
 
-        private TRes _prevValue;
+        private TRes? _prevValue;
 
         /// <inheritdoc cref="IBindable{T}.Value"/>
-        public TRes Value => _aggregator.Invoke(_bindableArr.Select(x => x.Value).ToArray());
+        public TRes Value => _aggregator.Invoke(_bindableArr.Select(x => x.Value!).ToArray());
 
         /// <summary>
         /// Constructor for bindable values aggregator.
@@ -31,8 +31,9 @@ namespace AsyncReactAwait.Bindable
         /// <param name="aggregator"></param>
         public BindableAggregator(IEnumerable<IBindableRaw> bindableRaws, Func<object[], TRes> aggregator)
         {
+            if (bindableRaws == null) throw new ArgumentNullException(nameof(bindableRaws));
             _bindableArr = bindableRaws.ToArray();
-            _aggregator = aggregator;
+            _aggregator = aggregator ?? throw new ArgumentNullException(nameof(aggregator));
         }
         
         /// <inheritdoc cref="IBindable{T}.Bind(Action{T}, bool)"/>
@@ -147,7 +148,7 @@ namespace AsyncReactAwait.Bindable
             _subscribed = true;
         }
 
-        private void OnSourceUpdated(object value)
+        private void OnSourceUpdated(object? value)
         {
             foreach (var keyValuePair in _handlers)
             {
@@ -167,13 +168,13 @@ namespace AsyncReactAwait.Bindable
             _prevValue = Value;
         }
 
-        private void OnSourceUpdatedFull(object prevVal, object nextVal)
+        private void OnSourceUpdatedFull(object? prevVal, object? nextVal)
         {
             foreach (var keyValuePair in _fullHandlers)
             {
                 for (var i = 0; i < keyValuePair.Value; i++)
                 {
-                    keyValuePair.Key?.Invoke(_prevValue, Value);
+                    keyValuePair.Key?.Invoke(_prevValue!, Value);
                 }
             }
 

@@ -45,7 +45,7 @@ namespace AsyncReactAwait.Promises.Awaiter
         {
             if (_sourcePromise.TryGetResult(out var res))
             {
-                return res;
+                return res!;
             }
             throw new Exception("Can not obtain promise result!");
         }

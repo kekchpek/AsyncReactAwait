@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace AsyncReactAwait.Promises
 {
@@ -12,13 +11,12 @@ namespace AsyncReactAwait.Promises
         private readonly IList<Action<Exception>> _failCallbacks = new List<Action<Exception>>();
         private readonly IList<Action> _finallyCallbacks = new List<Action>();
 
-        private Exception _failingError;
+        private Exception? _failingError;
 
         /// <summary>
         /// An exception that cause promise fail. 
         /// </summary>
-        [AllowNull]
-        protected Exception FailException => _failingError;
+        protected Exception? FailException => _failingError;
 
         /// <inheritdoc cref="IBasePromise.IsCompleted"/>
         public bool IsCompleted { get; private set; }
@@ -30,7 +28,7 @@ namespace AsyncReactAwait.Promises
             {
                 if (_failingError != null)
                 {
-                    callback?.Invoke(_failingError);
+                    callback.Invoke(_failingError);
                 }
                 else
                 {
@@ -45,11 +43,12 @@ namespace AsyncReactAwait.Promises
         /// <inheritdoc cref="IBasePromise.Finally(Action)"/>
         public IBasePromise Finally(Action callback)
         {
+            if (callback == null) throw new ArgumentNullException(nameof(callback));
             lock (this)
             {
                 if (IsCompleted)
                 {
-                    callback?.Invoke();
+                    callback.Invoke();
                 }
                 else
                 {
@@ -63,11 +62,12 @@ namespace AsyncReactAwait.Promises
         /// <inheritdoc cref="IBaseControllablePromise.Fail(Exception)"/>
         public void Fail(Exception error)
         {
+            if (error == null) throw new ArgumentNullException(nameof(error));
             lock (this)
             {
                 if (IsCompleted)
                     throw new InvalidOperationException("Promise is already completed!");
-                _failingError = error ?? new Exception("The null was passed to the promise as an exception");
+                _failingError = error;
                 foreach (var callback in _failCallbacks)
                 {
                     callback?.Invoke(_failingError);

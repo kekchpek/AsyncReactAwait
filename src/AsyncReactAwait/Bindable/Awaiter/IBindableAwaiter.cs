@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Runtime.CompilerServices;
 
 namespace AsyncReactAwait.Bindable.Awaiter
 {
@@ -10,7 +7,7 @@ namespace AsyncReactAwait.Bindable.Awaiter
     /// The awaiter for specific bindable value.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IBindableAwaiter<T> : INotifyCompletion, ICriticalNotifyCompletion
+    public interface IBindableAwaiter<out T> : ICriticalNotifyCompletion
     {
         /// <summary>
         /// Indicates that bindable value was changed.

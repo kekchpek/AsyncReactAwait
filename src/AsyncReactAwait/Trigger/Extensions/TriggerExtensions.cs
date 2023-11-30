@@ -1,7 +1,4 @@
-﻿using AsyncReactAwait.Trigger;
-using AsyncReactAwait.Trigger.Awaiter;
-using AsyncReactAwait.Trigger.Extensions;
-using System;
+﻿using AsyncReactAwait.Trigger.Awaiter;
 
 namespace AsyncReactAwait.Trigger.Extensions
 {
@@ -21,7 +18,8 @@ namespace AsyncReactAwait.Trigger.Extensions
         /// <returns>The awater for specified value.</returns>
         public static ITriggerAwaiter<T> WillBeEqual<T>(this ITriggerHandler<T> trigger, T value)
         {
-            return trigger.WillBe(x => x.Equals(value));
+            return trigger.WillBe(x => (x != null && x.Equals(value)) ||
+                                       (x == null && value == null));
         }
 
     }
