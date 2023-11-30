@@ -93,18 +93,99 @@ public class BindableTests
         int? newVal = null;
         
         // Act
-        Action<int, int> handler = (p, n) =>
+        void Handler(int p, int n)
         {
             prevVal = p;
             newVal = n;
-        };
-        bindable.Bind(handler);
-        bindable.Unbind(handler);
+        }
+
+        bindable.Bind((Action<int, int>)Handler);
+        bindable.Unbind((Action<int, int>)Handler);
         bindable.Set(200);
         
         // Assert
         Assert.AreEqual(prevVal, null);
         Assert.AreEqual(newVal, null);
+    }
+
+    [Test]
+    public void Proxy_ValueChanged()
+    {
+        // Arrange
+        var proxied = new Mutable<int>(123);
+        var proxy = new Mutable<int>();
+        
+        // Act
+        proxy.Proxy(proxied);
+        
+        // Assert
+        Assert.AreEqual(proxied.Value, proxy.Value);
+    }
+
+    [Test]
+    public void Proxy_ProxiedChanged_ValueChanged()
+    {
+        // Arrange
+        var proxied = new Mutable<int>(123);
+        var proxy = new Mutable<int>();
+        
+        // Act
+        proxy.Proxy(proxied);
+        proxied.Value = 333;
+        
+        // Assert
+        Assert.AreEqual(proxied.Value, proxy.Value);
+    }
+
+    [Test]
+    public void Proxy_StopProxying_ValueNotChanged()
+    {
+        // Arrange
+        var proxied = new Mutable<int>(123);
+        var proxy = new Mutable<int>();
+        
+        // Act
+        proxy.Proxy(proxied);
+        proxied.Value = 333;
+        proxy.StopProxying();
+        proxied.Value = 444;
+        
+        // Assert
+        Assert.AreEqual(333, proxy.Value);
+    }
+
+    [Test]
+    public void Proxy_SetValue_ValueNotChanged()
+    {
+        // Arrange
+        var proxied = new Mutable<int>(123);
+        var proxy = new Mutable<int>();
+        
+        // Act
+        proxy.Proxy(proxied);
+        proxied.Value = 333;
+        proxy.Value = 12345;
+        proxied.Value = 444;
+        
+        // Assert
+        Assert.AreEqual(12345, proxy.Value);
+    }
+
+    [Test]
+    public void Proxy_ForceSetValue_ValueNotChanged()
+    {
+        // Arrange
+        var proxied = new Mutable<int>(123);
+        var proxy = new Mutable<int>();
+        
+        // Act
+        proxy.Proxy(proxied);
+        proxied.Value = 333;
+        proxy.ForceSet(12345);
+        proxied.Value = 444;
+        
+        // Assert
+        Assert.AreEqual(12345, proxy.Value);
     }
     
 }

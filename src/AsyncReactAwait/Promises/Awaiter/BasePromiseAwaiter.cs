@@ -8,13 +8,13 @@ namespace AsyncReactAwait.Promises.Awaiter
     {
 
         private readonly IBasePromise _sourcePromise;
-        private readonly SynchronizationContext _syncContext;
+        private readonly SynchronizationContext? _syncContext;
 
         private bool _captureContext = true;
 
-        protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext syncContext)
+        protected BasePromiseAwaiter(IBasePromise sourcePromise, SynchronizationContext? syncContext)
         {
-            _sourcePromise = sourcePromise;
+            _sourcePromise = sourcePromise ?? throw new ArgumentNullException(nameof(sourcePromise));
             _syncContext = syncContext;
         }
 
@@ -30,25 +30,22 @@ namespace AsyncReactAwait.Promises.Awaiter
 
         public void OnCompleted(Action continuation)
         {
-            if (continuation == null)
-            {
-                return;
-            }
+            if (continuation == null) throw new ArgumentNullException(nameof(continuation));
             _sourcePromise.Finally(() =>
             {
                 if (_syncContext != null && _captureContext)
                 {
-                    _syncContext.Send(_ => continuation?.Invoke(), null);
+                    _syncContext.Send(_ => continuation.Invoke(), null);
                 }
                 else
                 {
                     if (SynchronizationContext.Current != null)
                     {
-                        SynchronizationContext.Current.Send(_ => continuation?.Invoke(), null);
+                        SynchronizationContext.Current.Send(_ => continuation.Invoke(), null);
                     }
                     else
                     {
-                        continuation?.Invoke();
+                        continuation.Invoke();
                     }
                 }
             });

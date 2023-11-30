@@ -10,7 +10,7 @@ namespace AsyncReactAwait.Trigger
     {
 
         /// <inheritdoc cref="ITriggerHandler.Triggered"/>
-        public event Action Triggered;
+        public event Action? Triggered;
 
         /// <inheritdoc cref="ITriggerHandler.ConfigureAwaiter(bool)"/>
         public ITriggerAwaiter ConfigureAwaiter(bool captureContext)
@@ -37,19 +37,12 @@ namespace AsyncReactAwait.Trigger
     {
 
         /// <inheritdoc cref="ITriggerHandler{T}.Triggered"/>
-        public new event Action<T> Triggered;
+        public new event Action<T>? Triggered;
 
         event Action ITriggerHandler.Triggered
         {
-            add
-            {
-                base.Triggered += value;
-            }
-
-            remove
-            {
-                base.Triggered -= value;
-            }
+            add => base.Triggered += value;
+            remove => base.Triggered -= value;
         }
 
 
@@ -63,7 +56,7 @@ namespace AsyncReactAwait.Trigger
         /// <inheritdoc cref="ITriggerHandler{T}.GetAwaiter"/>
         public new ITriggerAwaiter<T> GetAwaiter()
         {
-            return new TriggerAwaiter<T>(this, SynchronizationContext.Current, null);
+            return new TriggerAwaiter<T>(this, SynchronizationContext.Current, _ => true);
         }
 
         /// <inheritdoc cref="ITriggerHandler{T}.ConfigureAwaiter(bool)"/>

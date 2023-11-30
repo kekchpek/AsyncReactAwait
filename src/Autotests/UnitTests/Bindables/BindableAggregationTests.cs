@@ -255,16 +255,17 @@ public class BindableAggregationTests
         IBindableRaw bindable2 = Substitute.For<IBindableRaw>();
         
         // Act
+        // ReSharper disable once UnusedVariable
         var aggregatedBindable = new BindableAggregator<int>(
             new [] { bindable1, bindable2 }, 
             values => (int)values[0] + (int)values[1]);
         
         // Assert
-        bindable1.DidNotReceiveWithAnyArgs().Bind(null, false);
-        bindable1.DidNotReceiveWithAnyArgs().Bind(null, false);
+        bindable1.DidNotReceiveWithAnyArgs().Bind(null!, false);
+        bindable1.DidNotReceiveWithAnyArgs().Bind(null!, false);
         bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<object, object>>());
-        bindable2.DidNotReceiveWithAnyArgs().Bind(null, false);
-        bindable2.DidNotReceiveWithAnyArgs().Bind(null, false);
+        bindable2.DidNotReceiveWithAnyArgs().Bind(null!, false);
+        bindable2.DidNotReceiveWithAnyArgs().Bind(null!, false);
         bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<object, object>>());
     }
 

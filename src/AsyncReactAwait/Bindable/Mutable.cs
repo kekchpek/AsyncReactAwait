@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace AsyncReactAwait.Bindable
 {
@@ -8,14 +7,15 @@ namespace AsyncReactAwait.Bindable
     public class Mutable<T> : IMutable<T>, IBindableRaw
     {
 
-        [AllowNull]
         private T _value;
 
-        private event Action<T> OnChange;
-        private event Action<object> OnChangeRaw;
-        private event Action OnChangeBlind;
-        private event Action<T, T> OnChangeFull;
-        private event Action<object, object> OnChangeFullRaw;
+        private IBindable<T>? _proxiedObject;
+
+        private event Action<T>? OnChange;
+        private event Action<object?>? OnChangeRaw;
+        private event Action? OnChangeBlind;
+        private event Action<T, T>? OnChangeFull;
+        private event Action<object?, object?>? OnChangeFullRaw;
 
         /// <inheritdoc cref="IMutable{T}.Value"/>
         public T Value
@@ -23,13 +23,14 @@ namespace AsyncReactAwait.Bindable
             get => _value;
             set
             {
+                StopProxying();
                 if (Equals(_value, value))
                     return;
-                ForceSet(value);
+                ForceSetInternal(value);
             }
         }
 
-        object IBindableRaw.Value => Value;
+        object? IBindableRaw.Value => Value;
 
         T IBindable<T>.Value => _value;
 
@@ -37,13 +38,42 @@ namespace AsyncReactAwait.Bindable
         /// Default constructor to create mutable value.
         /// </summary>
         /// <param name="initialValue">Initial value.</param>
-        public Mutable([AllowNull] T initialValue = default)
+        public Mutable(T initialValue = default!)
         {
             _value = initialValue;
         }
 
         /// <inheritdoc />
+        public void Proxy(IBindable<T> valueSource)
+        {
+            StopProxying();
+            _proxiedObject = valueSource;
+            _proxiedObject.Bind(OnProxyChanged);
+        }
+
+        private void OnProxyChanged(T proxyValue)
+        {
+            ForceSetInternal(proxyValue);
+        }
+
+        /// <inheritdoc />
+        public void StopProxying()
+        {
+            if (_proxiedObject == null)
+                return;
+            
+            _proxiedObject.Unbind(OnProxyChanged);
+            _proxiedObject = null;
+        }
+
+        /// <inheritdoc />
         public void ForceSet(T value)
+        {
+            StopProxying();
+            ForceSetInternal(value);
+        }
+
+        private void ForceSetInternal(T value)
         {
             var previousVal = _value;
             _value = value;
@@ -55,7 +85,7 @@ namespace AsyncReactAwait.Bindable
         }
         
         /// <inheritdoc />
-        public void Bind(Action<object> handler, bool callImmediately = true)
+        public void Bind(Action<object?> handler, bool callImmediately = true)
         {
             if (handler == null)
             {
@@ -69,19 +99,19 @@ namespace AsyncReactAwait.Bindable
         }
 
         /// <inheritdoc />
-        public void Bind(Action<object, object> handler)
+        public void Bind(Action<object?, object?> handler)
         {
             OnChangeFullRaw += handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <inheritdoc />
-        public void Unbind(Action<object> handler)
+        public void Unbind(Action<object?> handler)
         {
             OnChangeRaw -= handler;
         }
 
         /// <inheritdoc />
-        public void Unbind(Action<object, object> handler)
+        public void Unbind(Action<object?, object?> handler)
         {
             OnChangeFullRaw -= handler;
         }

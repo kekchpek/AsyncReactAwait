@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using AsyncReactAwait.Trigger;
+﻿using AsyncReactAwait.Trigger;
+using NUnit.Framework;
 
-namespace AsyncReactAwait.Tests.Triggers
+namespace Autotests.UnitTests.Triggers
 {
     public class TriggerTests
     {

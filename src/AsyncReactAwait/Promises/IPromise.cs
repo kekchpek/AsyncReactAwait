@@ -37,7 +37,7 @@ namespace AsyncReactAwait.Promises
         /// </summary>
         /// <param name="result">The result of the promise.</param>
         /// <returns>Returns true if result can be obtained. False - otherwise.</returns>
-        bool TryGetResult(out T result);
+        bool TryGetResult(out T? result);
     }
 
 

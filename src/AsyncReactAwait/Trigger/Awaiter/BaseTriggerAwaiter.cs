@@ -7,24 +7,24 @@ namespace AsyncReactAwait.Trigger.Awaiter
         where TConcrete : IBaseTriggerAwaiter<TConcrete>
     {
 
-        private readonly SynchronizationContext _synchronizationContext;
+        private readonly SynchronizationContext? _synchronizationContext;
 
         private bool _isCompleted;
 
         private bool _captureContext = true;
 
-        private event Action _onTriggerCompleted;
+        private event Action? OnTriggerCompleted;
 
         public bool IsCompleted => _isCompleted;
 
-        protected BaseTriggerAwaiter(SynchronizationContext context) 
+        protected BaseTriggerAwaiter(SynchronizationContext? context) 
         {
             _synchronizationContext = context;
         }
 
         public void OnCompleted(Action continuation)
         {
-            _onTriggerCompleted += continuation;
+            OnTriggerCompleted += continuation;
         }
 
         public void UnsafeOnCompleted(Action continuation)
@@ -36,15 +36,15 @@ namespace AsyncReactAwait.Trigger.Awaiter
         {
             _isCompleted = true;
             if (_captureContext && _synchronizationContext != null) {
-                _synchronizationContext.Send(_ => _onTriggerCompleted?.Invoke(), null);
+                _synchronizationContext.Send(_ => OnTriggerCompleted?.Invoke(), null);
             }
             else if (SynchronizationContext.Current != null)
             {
-                SynchronizationContext.Current.Send(_ => _onTriggerCompleted?.Invoke(), null);
+                SynchronizationContext.Current.Send(_ => OnTriggerCompleted?.Invoke(), null);
             }
             else
             {
-                _onTriggerCompleted?.Invoke();
+                OnTriggerCompleted?.Invoke();
             }
         }
 

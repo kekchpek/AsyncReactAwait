@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AsyncReactAwait.Bindable
+﻿namespace AsyncReactAwait.Bindable
 {
 
     /// <summary>
-    /// Class for representing changable bindable value.
+    /// Class for representing changeable bindable value.
     /// </summary>
     /// <typeparam name="T">Bindable value type.</typeparam>
     public interface IMutable<T> : IBindable<T>
@@ -16,6 +10,18 @@ namespace AsyncReactAwait.Bindable
 
         /// <inheritdoc cref="IBindable{T}.Value"/>
         new T Value { get; set; }
+
+        /// <summary>
+        /// Proxies a value and it's changes from certain bindable object.
+        /// Setting a value explicitly breaks proxying.
+        /// </summary>
+        /// <param name="valueSource">The object to proxy.</param>
+        void Proxy(IBindable<T> valueSource);
+
+        /// <summary>
+        /// Breaks proxying other bindable. If it was.
+        /// </summary>
+        void StopProxying();
 
         /// <summary>
         /// Sets the value to new value event if they are equal.

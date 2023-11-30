@@ -12,6 +12,7 @@
 	<RepositoryUrl>https://github.com/kekchpek/AsyncReactAwait</RepositoryUrl>
 	<RepositoryType />
 	<LangVersion>9</LangVersion>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

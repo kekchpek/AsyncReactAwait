@@ -20,7 +20,8 @@ namespace AsyncReactAwait.Bindable.BindableExtensions
         /// <returns>The awaiter for specified value.</returns>
         public static IBindableAwaiter<T> WillBeEqual<T>(this IBindable<T> bindable, T value)
         {
-            return bindable.WillBe(v => v.Equals(value));
+            return bindable.WillBe(v => (v != null && v.Equals(value)) ||
+                                        (v == null && value == null));
         }
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace AsyncReactAwait.Bindable.BindableExtensions
         /// <param name="bindable">The bindable value to operate with.</param>
         /// <param name="predicate">The specific value awaiter.</param>
         /// <param name="checkCurrentValue">False if you don't want to check current value</param>
+        // ReSharper disable once MemberCanBePrivate.Global
         public static IBindableAwaiter<T> WillBe<T>(this IBindable<T> bindable, 
             Func<T, bool> predicate, bool checkCurrentValue = true)
         {
@@ -56,6 +58,21 @@ namespace AsyncReactAwait.Bindable.BindableExtensions
         public static void Set<T>(this IMutable<T> mutable, T value)
         {
             mutable.Value = value;
+        }
+
+
+        /// <summary>
+        /// Proxies a value and it's changes from certain bindable object.
+        /// Setting a value explicitly breaks proxying.
+        /// </summary>
+        /// <param name="proxy">The proxying object.</param>
+        /// <param name="valueSource">The object to proxy.</param>
+        /// <param name="converter">The converter from proxy type.</param>
+        /// <typeparam name="TSource">The proxy type.</typeparam>
+        /// <typeparam name="T">The proxying type.</typeparam>
+        public static void Proxy<T, TSource>(this IMutable<T> proxy, IBindable<TSource> valueSource, Func<TSource, T> converter)
+        {
+            proxy.Proxy(valueSource.ConvertTo(converter));
         }
         
         /// <summary>
