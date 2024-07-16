@@ -187,5 +187,84 @@ public class BindableTests
         // Assert
         Assert.AreEqual(12345, proxy.Value);
     }
+
+    [Test]
+    public void OnAnySubscription_NoActions_NotFired()
+    {
+        // Arrange
+        var mutable = new Mutable<int>();
+        var fired = false;
+        mutable.OnAnySubscription += () => fired = true;
+        
+        // Act 
+        // No action
+        
+        // Assert
+        Assert.IsFalse(fired);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void OnAnySubscription_HandlerBound_NotFired(bool callHandlerImmediately)
+    {
+        // Arrange
+        var mutable = new Mutable<int>();
+        var fired = false;
+        mutable.OnAnySubscription += () => fired = true;
+        
+        // Act
+        mutable.Bind(() => { }, callHandlerImmediately);
+        
+        // Assert
+        Assert.IsTrue(fired);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void OnAnySubscription_ValueHandlerBound_NotFired(bool callHandlerImmediately)
+    {
+        // Arrange
+        var mutable = new Mutable<int>();
+        var fired = false;
+        mutable.OnAnySubscription += () => fired = true;
+        
+        // Act
+        mutable.Bind((int _) => { }, callHandlerImmediately);
+        
+        // Assert
+        Assert.IsTrue(fired);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void OnAnySubscription_ValueRawHandlerBound_NotFired(bool callHandlerImmediately)
+    {
+        // Arrange
+        var mutable = new Mutable<int>();
+        var fired = false;
+        mutable.OnAnySubscription += () => fired = true;
+        
+        // Act
+        mutable.Bind((object _) => { }, callHandlerImmediately);
+        
+        // Assert
+        Assert.IsTrue(fired);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void OnAnySubscription_ValueRawChangeHandlerBound_NotFired(bool callHandlerImmediately)
+    {
+        // Arrange
+        var mutable = new Mutable<int>();
+        var fired = false;
+        mutable.OnAnySubscription += () => fired = true;
+        
+        // Act
+        mutable.Bind((object _, object _) => { }, callHandlerImmediately);
+        
+        // Assert
+        Assert.IsTrue(fired);
+    }
     
 }

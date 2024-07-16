@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AsyncReactAwait.Bindable
 {
@@ -65,6 +67,23 @@ namespace AsyncReactAwait.Bindable
             return new BindableAggregator<TRes>(
                 new[] { br1, br2, br3, br4 }, 
                 values => aggregator((T1)values[0], (T2)values[1], (T3)values[2], (T4)values[3]));
+        }
+        
+        /// <summary>
+        /// Aggregate any count of bindable values of same type
+        /// </summary>
+        public static IBindable<TRes> Aggregate<T, TRes>(IEnumerable<IBindable<T>> bindableValues, Func<T[], TRes> aggregator)
+        {
+
+            var rawBindables = bindableValues.Select(x =>
+            {
+                if (!(x is IBindableRaw br))
+                    throw new InvalidOperationException(
+                        $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
+                return br;
+            });
+            return new BindableAggregator<TRes>(rawBindables, 
+                values => aggregator(values.Cast<T>().ToArray()));
         }
     }
 }
