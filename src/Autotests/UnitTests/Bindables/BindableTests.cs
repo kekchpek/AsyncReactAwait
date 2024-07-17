@@ -250,10 +250,9 @@ public class BindableTests
         // Assert
         Assert.IsTrue(fired);
     }
-
-    [TestCase(true)]
-    [TestCase(false)]
-    public void OnAnySubscription_ValueRawChangeHandlerBound_NotFired(bool callHandlerImmediately)
+    
+    [Test]
+    public void OnAnySubscription_ValueRawChangeHandlerBound_NotFired()
     {
         // Arrange
         var mutable = new Mutable<int>();
@@ -261,7 +260,7 @@ public class BindableTests
         mutable.OnAnySubscription += () => fired = true;
         
         // Act
-        mutable.Bind((object _, object _) => { }, callHandlerImmediately);
+        mutable.Bind((object _, object _) => { });
         
         // Assert
         Assert.IsTrue(fired);
