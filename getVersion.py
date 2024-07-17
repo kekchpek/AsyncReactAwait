@@ -1,10 +1,10 @@
 import sys
 
-unityProjectSettingsPath = sys.argv[1];
+versionFilePath = sys.argv[1];
 buildDataPath = sys.argv[2];
 bundleParameter = "bundleVersion: ";
 
-with open(unityProjectSettingsPath) as file:
+with open(versionFilePath) as file:
     projectVersion = file.readline();
 
 projectVersion = projectVersion.split('.')
@@ -12,7 +12,7 @@ projectVersion = projectVersion.split('.')
 open(buildDataPath, 'a+')
     
 
-with open(buildDataPath, 'r+') as buildDataFile:
+with open(buildDataPath, 'r+', create_parents=True) as buildDataFile:
     buildVersions = [x.strip().split('.') for x in buildDataFile.readlines()]
 
 if (len(buildVersions) == 0):
