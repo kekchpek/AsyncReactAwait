@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 versionFilePath = sys.argv[1];
 buildDataPath = sys.argv[2];
@@ -9,6 +10,7 @@ with open(versionFilePath) as file:
 
 projectVersion = projectVersion.split('.')
 
+Path(buildDataPath).parent.mkdir(exist_ok=True, parents=True)
 open(buildDataPath, 'a+', create_parents=True)
 
 with open(buildDataPath, 'r+') as buildDataFile:
