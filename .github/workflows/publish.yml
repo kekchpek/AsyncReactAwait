@@ -11,7 +11,7 @@ jobs:
     environment: CommonEnv
     
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       REPO_URL: ${{github.repositoryUrl}}
 
     steps:
@@ -29,7 +29,7 @@ jobs:
         echo $CURRENT_TAG_VERSION
         if [ -z "$CURRENT_TAG_VERSION" ]
         then
-        git remote set-url origin https://$PAT_TOKEN@${REPO_URL:6}
+        git remote set-url origin https://$GITHUB_TOKEN@${REPO_URL:6}
         CURRENT_TAG_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
         git tag $CURRENT_TAG_VERSION
         git push origin --tags
