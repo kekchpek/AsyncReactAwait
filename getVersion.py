@@ -11,7 +11,7 @@ with open(versionFilePath) as file:
 projectVersion = projectVersion.split('.')
 
 Path(buildDataPath).parent.mkdir(exist_ok=True, parents=True)
-open(buildDataPath, 'a+', create_parents=True)
+open(buildDataPath, 'a+')
 
 with open(buildDataPath, 'r+') as buildDataFile:
     buildVersions = [x.strip().split('.') for x in buildDataFile.readlines()]
