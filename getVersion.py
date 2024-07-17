@@ -9,10 +9,9 @@ with open(versionFilePath) as file:
 
 projectVersion = projectVersion.split('.')
 
-open(buildDataPath, 'a+')
-    
+open(buildDataPath, 'a+', create_parents=True)
 
-with open(buildDataPath, 'r+', create_parents=True) as buildDataFile:
+with open(buildDataPath, 'r+') as buildDataFile:
     buildVersions = [x.strip().split('.') for x in buildDataFile.readlines()]
 
 if (len(buildVersions) == 0):
