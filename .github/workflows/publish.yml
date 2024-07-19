@@ -55,8 +55,14 @@ jobs:
     - name: Tag non-release
       if: github.ref != 'refs/heads/master'
       run: |
-        git tag ${{ env.newVersion }}
-        git push --tags
+        lastTag=$(git describe --tags --abbrev=0)
+        currentTag=$(git tag --contains)
+        if [ "$lastTag" != "$currentTag" ]
+        then
+          echo "New tag ${{ env.newVersion }}"
+          git tag ${{ env.newVersion }}
+          git push --tags
+        fi
     - name: Create Release
       uses: ncipollo/release-action@v1.13.0
       with:
