@@ -21,6 +21,7 @@ namespace AsyncReactAwait.Bindable
         event Action OnSubscriptionsCleared;
 
         /// <inheritdoc cref="IBindable{T}.Value"/>
+        /// Automatically resets proxying value.
         new T Value { get; set; }
 
         /// <summary>
