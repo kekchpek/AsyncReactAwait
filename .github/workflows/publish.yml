@@ -7,11 +7,12 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: CommonEnv
     
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      REPO_URL: ${{github.repositoryUrl}}
 
     steps:
     - uses: actions/checkout@v4
@@ -24,29 +25,18 @@ jobs:
     - name: Configure version
       run: |
         git fetch --unshallow
-        lastTag=$(git describe --tags --abbrev=0)
-        lastTagMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <<<"$lastTag")
-        echo Last tag version is $lastTagMainVersion
-        currentVersion=$(cat VERSION)
-        echo Current version is $currentVersion
-        currentMainVersion=$(sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p' <VERSION)
-        echo Current main version is $currentMainVersion
-        if [ "$lastTagMainVersion" = "$currentMainVersion" ]
+        CURRENT_TAG_VERSION=$(git tag --points-at HEAD)
+        echo $CURRENT_TAG_VERSION
+        if [ -z "$CURRENT_TAG_VERSION" ]
         then
-          echo "Version the same."
-          lastTagBuildVersion=$(sed -n 's/^[0-9]*\.[0-9]*\.\([0-9]*\).*/\1/p' <<<"$lastTag")
-          newBuildVersion=$((lastTagBuildVersion+1))
-          newVersion="$lastTagMainVersion"."$newBuildVersion"
-          echo "newVersion=$newVersion"
-          echo "newVersion=$newVersion" >> $GITHUB_ENV
-        else
-          echo "New version!"
-          newVersion="$currentMainVersion".1
-          VersionPrefix=$newVersion
-          echo "newVersion=$newVersion"
-          echo "newVersion=$newVersion" >> $GITHUB_ENV
+        git remote set-url origin https://$GITHUB_TOKEN@${REPO_URL:6}
+        CURRENT_TAG_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
+        git tag $CURRENT_TAG_VERSION
+        git push origin --tags
         fi
         sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$newVersion\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
+        echo "newVersion=$CURRENT_TAG_VERSION"
+        echo "newVersion=$CURRENT_TAG_VERSION" >> $GITHUB_ENV
     - name: Test
       run: dotnet test src --verbosity normal
     - name: Build
@@ -65,8 +55,14 @@ jobs:
     - name: Tag non-release
       if: github.ref != 'refs/heads/master'
       run: |
-        git tag ${{ env.newVersion }}
-        git push --tags
+        lastTag=$(git describe --tags --abbrev=0)
+        currentTag=$(git tag --contains)
+        if [ "$lastTag" != "$currentTag" ]
+        then
+          echo "New tag ${{ env.newVersion }}"
+          git tag ${{ env.newVersion }}
+          git push --tags
+        fi
     - name: Create Release
       uses: ncipollo/release-action@v1.13.0
       with:

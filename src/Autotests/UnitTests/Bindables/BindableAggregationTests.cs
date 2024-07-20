@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using AsyncReactAwait.Bindable;
 using AsyncReactAwait.Bindable.BindableExtensions;
 using NSubstitute;
@@ -316,5 +317,55 @@ public class BindableAggregationTests
         bindable1.Received(1).Unbind(Arg.Any<Action<object, object>>());
         bindable2.Received(1).Unbind(Arg.Any<Action<object>>());
         bindable2.Received(1).Unbind(Arg.Any<Action<object, object>>());
+    }
+
+    [Test]
+    public void Aggregate1000Bindables_AggregatedCorrectly()
+    {
+        // Arrange
+        var floatBindables = new Mutable<float>[1000];
+        for (int i = 0; i < floatBindables.Length; i++)
+        {
+            floatBindables[i] = new Mutable<float>();
+        }
+        var aggregatedBindable = 
+            Bindable.Aggregate(floatBindables, values => values.Sum());
+        
+        // Act
+        for (int i = 0; i < floatBindables.Length; i++)
+        {
+            floatBindables[i].Value = i;
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            floatBindables.Select(x => x.Value).Sum(),
+            aggregatedBindable.Value);
+    }
+
+    [Test]
+    public void Aggregate1000Bindables_AggregationCalled()
+    {
+        // Arrange
+        var floatBindables = new Mutable<float>[1000];
+        for (int i = 0; i < floatBindables.Length; i++)
+        {
+            floatBindables[i] = new Mutable<float>();
+        }
+        var aggregationCallsCount = 0;
+        var aggregatedBindable = 
+            Bindable.Aggregate(floatBindables, _ => 0f);
+        aggregatedBindable.Bind(_ => aggregationCallsCount++);
+
+        // Act
+        for (int i = 0; i < floatBindables.Length; i++)
+        {
+            floatBindables[i].ForceSet(i);
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            floatBindables.Length + 1,
+            aggregationCallsCount);
     }
 }

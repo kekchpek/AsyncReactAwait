@@ -1,4 +1,6 @@
-﻿namespace AsyncReactAwait.Bindable
+﻿using System;
+
+namespace AsyncReactAwait.Bindable
 {
 
     /// <summary>
@@ -8,7 +10,18 @@
     public interface IMutable<T> : IBindable<T>
     {
 
+        /// <summary>
+        /// Fired on any listener is bound for this value.
+        /// </summary>
+        event Action OnAnySubscription;
+
+        /// <summary>
+        /// Fired on any listener is unbound from this value, and no other listeners left.
+        /// </summary>
+        event Action OnSubscriptionsCleared;
+
         /// <inheritdoc cref="IBindable{T}.Value"/>
+        /// Automatically resets proxying value.
         new T Value { get; set; }
 
         /// <summary>
@@ -24,7 +37,7 @@
         void StopProxying();
 
         /// <summary>
-        /// Sets the value to new value event if they are equal.
+        /// Sets the value to new value even if they are equal.
         /// </summary>
         /// <param name="value">New value.</param>
         void ForceSet(T value);

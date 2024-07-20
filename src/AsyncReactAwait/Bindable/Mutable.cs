@@ -16,6 +16,8 @@ namespace AsyncReactAwait.Bindable
         private event Action? OnChangeBlind;
         private event Action<T, T>? OnChangeFull;
         private event Action<object?, object?>? OnChangeFullRaw;
+        public event Action? OnAnySubscription;
+        public event Action? OnSubscriptionsCleared;
 
         /// <inheritdoc cref="IMutable{T}.Value"/>
         public T Value
@@ -96,24 +98,14 @@ namespace AsyncReactAwait.Bindable
                 handler.Invoke(_value);
             }
             OnChangeRaw += handler;
+            OnAnySubscription?.Invoke();
         }
 
         /// <inheritdoc />
         public void Bind(Action<object?, object?> handler)
         {
             OnChangeFullRaw += handler ?? throw new ArgumentNullException(nameof(handler));
-        }
-
-        /// <inheritdoc />
-        public void Unbind(Action<object?> handler)
-        {
-            OnChangeRaw -= handler;
-        }
-
-        /// <inheritdoc />
-        public void Unbind(Action<object?, object?> handler)
-        {
-            OnChangeFullRaw -= handler;
+            OnAnySubscription?.Invoke();
         }
 
         /// <inheritdoc cref="IBindable{T}.Bind(Action{T}, bool)"/>
@@ -129,8 +121,8 @@ namespace AsyncReactAwait.Bindable
                 handler.Invoke(_value);
             }
             OnChange += handler;
+            OnAnySubscription?.Invoke();
         }
-
         /// <inheritdoc cref="IBindable{T}.Bind(Action, bool)"/>
         /// <exception cref="ArgumentNullException"></exception>
         public void Bind(Action handler, bool callImmediately = true)
@@ -141,30 +133,68 @@ namespace AsyncReactAwait.Bindable
             {
                 handler.Invoke();
             }
+            OnAnySubscription?.Invoke();
         }
 
         /// <inheritdoc />
         public void Bind(Action<T, T> handler)
         {
             OnChangeFull += handler;
+            OnAnySubscription?.Invoke();
+        }
+
+        /// <inheritdoc />
+        public void Unbind(Action<object?> handler)
+        {
+            if (!AnyListeners())
+                return;
+            OnChangeRaw -= handler;
+            if (!AnyListeners())
+                OnSubscriptionsCleared?.Invoke();
+        }
+
+        /// <inheritdoc />
+        public void Unbind(Action<object?, object?> handler)
+        {
+            if (!AnyListeners())
+                return;
+            OnChangeFullRaw -= handler;
+            if (!AnyListeners())
+                OnSubscriptionsCleared?.Invoke();
         }
 
         /// <inheritdoc cref="IBindable{T}.Unbind(Action{T})"/>
         public void Unbind(Action<T> handler)
         {
+            if (!AnyListeners())
+                return;
             OnChange -= handler;
+            if (!AnyListeners())
+                OnSubscriptionsCleared?.Invoke();
         }
 
         /// <inheritdoc cref="IBindable{T}.Unbind(Action)"/>
         public void Unbind(Action handler)
         {
+            if (!AnyListeners())
+                return;
             OnChangeBlind -= handler;
+            if (!AnyListeners())
+                OnSubscriptionsCleared?.Invoke();
         }
 
         /// <inheritdoc />
         public void Unbind(Action<T, T> handler)
         {
+            if (!AnyListeners())
+                return;
             OnChangeFull -= handler;
+            if (!AnyListeners())
+                OnSubscriptionsCleared?.Invoke();
         }
+
+        private bool AnyListeners() =>
+            OnChangeFull != null || OnChange != null || OnChangeBlind != null ||
+            OnChangeRaw != null || OnChangeFullRaw != null;
     }
 }
