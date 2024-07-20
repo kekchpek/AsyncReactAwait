@@ -37,7 +37,7 @@ namespace AsyncReactAwait.Bindable
         void StopProxying();
 
         /// <summary>
-        /// Sets the value to new value event if they are equal.
+        /// Sets the value to new value even if they are equal.
         /// </summary>
         /// <param name="value">New value.</param>
         void ForceSet(T value);
