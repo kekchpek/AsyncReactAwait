@@ -37,7 +37,7 @@ jobs:
         git tag $CURRENT_TAG_VERSION
         git push origin --tags
         fi
-        sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$newVersion\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
+        sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$CURRENT_TAG_VERSION\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
         echo "newVersion=$CURRENT_TAG_VERSION"
         echo "newVersion=$CURRENT_TAG_VERSION" >> $GITHUB_ENV
     - name: Test
