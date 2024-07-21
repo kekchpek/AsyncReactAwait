@@ -2,7 +2,10 @@ name: publish
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: 
+     - 'master'
+     - 'develop'
+     - 'release/*'
 
 jobs:
   build:
@@ -44,7 +47,6 @@ jobs:
     - name: Publish package to GitHub
       if: github.ref == 'refs/heads/master'
       run: |
-       dotnet nuget add source --username kekchpek --password ${{ secrets.PAT_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/kekchpek/index.json"
        dotnet nuget push src/build/*.nupkg --api-key ${{secrets.PAT_TOKEN}} --source github
     - name: Publish package to Nuget
       if: github.ref == 'refs/heads/master'
