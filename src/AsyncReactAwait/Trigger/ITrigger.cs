@@ -1,9 +1,12 @@
-﻿namespace AsyncReactAwait.Trigger
+﻿using System;
+
+namespace AsyncReactAwait.Trigger
 {
 
     /// <summary>
     /// The ingerface for trigger activation.
     /// </summary>
+    [Obsolete]
     public interface ITrigger
     {
 

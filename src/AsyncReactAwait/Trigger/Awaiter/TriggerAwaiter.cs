@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace AsyncReactAwait.Trigger.Awaiter
 {
+    [Obsolete]
     internal class TriggerAwaiter : BaseTriggerAwaiter<ITriggerAwaiter>, ITriggerAwaiter
     {
 
@@ -30,6 +31,7 @@ namespace AsyncReactAwait.Trigger.Awaiter
         }
     }
 
+    [Obsolete]
     internal class TriggerAwaiter<T> : BaseTriggerAwaiter<ITriggerAwaiter<T>>, ITriggerAwaiter<T>
     {
 

@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace Autotests.UnitTests.Promises
 {
+    [Obsolete]
     public class BaseControllablePromiseTests
     {
         private class TestPromise : BaseControllablePromise

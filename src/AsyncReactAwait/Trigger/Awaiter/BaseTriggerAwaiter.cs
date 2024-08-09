@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace AsyncReactAwait.Trigger.Awaiter
 {
+    [Obsolete]
     internal abstract class BaseTriggerAwaiter<TConcrete> : IBaseTriggerAwaiter<TConcrete>
         where TConcrete : IBaseTriggerAwaiter<TConcrete>
     {

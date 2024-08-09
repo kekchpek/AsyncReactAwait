@@ -6,6 +6,7 @@ namespace AsyncReactAwait.Trigger
 {
 
     /// <inheritdoc cref="IRegularTrigger"/>
+    [Obsolete]
     public class RegularTrigger : IRegularTrigger
     {
 
@@ -33,6 +34,7 @@ namespace AsyncReactAwait.Trigger
 
 
     /// <inheritdoc cref="IRegularTrigger{T}"/>
+    [Obsolete]
     public class RegularTrigger<T> : RegularTrigger, IRegularTrigger<T>
     {
 

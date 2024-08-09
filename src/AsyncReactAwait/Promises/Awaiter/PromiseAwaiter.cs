@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace AsyncReactAwait.Promises.Awaiter
 {
+    [Obsolete]
     internal class PromiseAwaiter : BasePromiseAwaiter<IPromiseAwaiter>, IPromiseAwaiter
     {
 
@@ -25,6 +26,7 @@ namespace AsyncReactAwait.Promises.Awaiter
         }
     }
 
+    [Obsolete]
     internal class PromiseAwaiter<T> : BasePromiseAwaiter<IPromiseAwaiter<T>>, IPromiseAwaiter<T>
     {
 

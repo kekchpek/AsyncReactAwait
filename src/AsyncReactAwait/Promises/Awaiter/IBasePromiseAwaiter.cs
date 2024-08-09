@@ -1,10 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AsyncReactAwait.Promises.Awaiter
 {
     /// <summary>
     /// Base API for promise awaiter.
     /// </summary>
+    [Obsolete]
     public interface IBasePromiseAwaiter<out T> : ICriticalNotifyCompletion
         where T : IBasePromiseAwaiter<T>
     {

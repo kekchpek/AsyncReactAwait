@@ -1,9 +1,12 @@
-﻿namespace AsyncReactAwait.Trigger.Awaiter
+﻿using System;
+
+namespace AsyncReactAwait.Trigger.Awaiter
 {
 
     /// <summary>
     /// Interface for awaiter for trigger.
     /// </summary>
+    [Obsolete]
     public interface ITriggerAwaiter : IBaseTriggerAwaiter<ITriggerAwaiter>
     {
 
@@ -17,6 +20,7 @@
     /// <summary>
     /// Interface for awaiter for trigger.
     /// </summary>
+    [Obsolete]
     public interface ITriggerAwaiter<T> : IBaseTriggerAwaiter<ITriggerAwaiter<T>>
     {
 

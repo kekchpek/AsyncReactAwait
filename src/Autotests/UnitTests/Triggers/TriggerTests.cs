@@ -1,8 +1,10 @@
-﻿using AsyncReactAwait.Trigger;
+﻿using System;
+using AsyncReactAwait.Trigger;
 using NUnit.Framework;
 
 namespace Autotests.UnitTests.Triggers
 {
+    [Obsolete]
     public class TriggerTests
     {
 

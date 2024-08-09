@@ -1,4 +1,5 @@
-﻿using AsyncReactAwait.Trigger.Awaiter;
+﻿using System;
+using AsyncReactAwait.Trigger.Awaiter;
 
 namespace AsyncReactAwait.Trigger.Extensions
 {
@@ -6,6 +7,7 @@ namespace AsyncReactAwait.Trigger.Extensions
     /// <summary>
     /// Extensions for triggers.
     /// </summary>
+    [Obsolete]
     public static class TriggerExtensions
     {
 

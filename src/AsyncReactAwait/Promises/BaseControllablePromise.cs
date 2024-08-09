@@ -5,6 +5,7 @@ namespace AsyncReactAwait.Promises
 {
 
     /// <inheritdoc cref="IBaseControllablePromise"/>
+    [Obsolete]
     public abstract class BaseControllablePromise : IBaseControllablePromise
     {
 

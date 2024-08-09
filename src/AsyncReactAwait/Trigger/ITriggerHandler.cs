@@ -7,6 +7,7 @@ namespace AsyncReactAwait.Trigger
     /// <summary>
     ///  The interface for handling trigger activation.
     /// </summary>
+    [Obsolete]
     public interface ITriggerHandler
     {
 
@@ -32,6 +33,7 @@ namespace AsyncReactAwait.Trigger
     /// <summary>
     /// The interface for handling value-trigger activation.
     /// </summary>
+    [Obsolete]
     public interface ITriggerHandler<T> : ITriggerHandler
     {
         /// <summary>

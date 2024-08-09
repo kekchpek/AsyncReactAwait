@@ -5,6 +5,7 @@ namespace AsyncReactAwait.Promises
     /// <summary>
     /// The interface to control promise completion.
     /// </summary>
+    [Obsolete]
     public interface IBaseControllablePromise : IBasePromise
     {
         /// <summary>

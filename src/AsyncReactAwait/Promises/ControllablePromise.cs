@@ -7,6 +7,7 @@ namespace AsyncReactAwait.Promises
 {
 
     /// <inheritdoc cref="IControllablePromise"/>
+    [Obsolete]
     public class ControllablePromise : BaseControllablePromise, IControllablePromise
     {
 
@@ -71,6 +72,7 @@ namespace AsyncReactAwait.Promises
     }
 
     /// <inheritdoc cref="IControllablePromise{T}"/>
+    [Obsolete]
     public class ControllablePromise<T> : BaseControllablePromise, IControllablePromise<T>
     {
         private readonly IList<Action<T>> _successCallbacks = new List<Action<T>>();

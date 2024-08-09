@@ -5,6 +5,7 @@ namespace AsyncReactAwait.Promises
     /// <summary>
     /// Auxiliary tools for promises.
     /// </summary>
+    [Obsolete]
     public static class PromiseTool
     {
 

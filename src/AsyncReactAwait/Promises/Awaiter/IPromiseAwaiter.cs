@@ -1,9 +1,12 @@
-﻿namespace AsyncReactAwait.Promises.Awaiter
+﻿using System;
+
+namespace AsyncReactAwait.Promises.Awaiter
 {
 
     /// <summary>
     /// An awaiter for promises with result.
     /// </summary>
+    [Obsolete]
     public interface IPromiseAwaiter : IBasePromiseAwaiter<IPromiseAwaiter>
     {
         /// <summary>
@@ -15,6 +18,7 @@
     /// <summary>
     /// An awaiter for promises with result.
     /// </summary>
+    [Obsolete]
     public interface IPromiseAwaiter<T> : IBasePromiseAwaiter<IPromiseAwaiter<T>>
     {
         /// <summary>

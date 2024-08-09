@@ -5,6 +5,7 @@ namespace AsyncReactAwait.Promises
     /// <summary>
     /// This is a base result independent callbacks for promises.
     /// </summary>
+    [Obsolete]
     public interface IBasePromise
     {
 

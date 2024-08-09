@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 namespace AsyncReactAwait.Promises.AsyncMethodBuilder
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+    [Obsolete]
     public struct AsyncPromiseMethodBuilder
     {
         public static AsyncPromiseMethodBuilder Create()
@@ -57,6 +58,7 @@ namespace AsyncReactAwait.Promises.AsyncMethodBuilder
     }
 
 
+    [Obsolete]
     public struct AsyncPromiseMethodBuilder<T>
     {
 

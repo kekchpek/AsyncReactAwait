@@ -1,10 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AsyncReactAwait.Trigger.Awaiter
 {
     /// <summary>
-    /// Base inteface for awaiter for trigger.
+    /// Base interface for awaiter for trigger.
     /// </summary>
+    [Obsolete]
     public interface IBaseTriggerAwaiter<out TConcrete> : ICriticalNotifyCompletion
         where TConcrete : IBaseTriggerAwaiter<TConcrete>
     {

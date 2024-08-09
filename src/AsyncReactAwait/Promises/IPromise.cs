@@ -9,6 +9,7 @@ namespace AsyncReactAwait.Promises
     /// An async operation with ability to proceed the result.
     /// </summary>
     /// <typeparam name="T">The type of the result</typeparam>
+    [Obsolete]
     [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder<>))]
     public interface IPromise<T> : IBasePromise
     {
@@ -44,6 +45,7 @@ namespace AsyncReactAwait.Promises
     /// <summary>
     /// An async operation with ability to proceed the result.
     /// </summary>
+    [Obsolete]
     [AsyncMethodBuilder(typeof(AsyncPromiseMethodBuilder))]
     public interface IPromise : IBasePromise
     {

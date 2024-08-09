@@ -1,9 +1,12 @@
-﻿namespace AsyncReactAwait.Promises
+﻿using System;
+
+namespace AsyncReactAwait.Promises
 {
 
     /// <summary>
     /// An interface to control promise success completition.
     /// </summary>
+    [Obsolete]
     public interface IControllablePromise : IBaseControllablePromise, IPromise
     {
         /// <summary>
@@ -15,6 +18,7 @@
     /// <summary>
     /// An interface to control promise success completition.
     /// </summary>
+    [Obsolete]
     public interface IControllablePromise<T> : IBaseControllablePromise, IPromise<T>
     {
         /// <summary>

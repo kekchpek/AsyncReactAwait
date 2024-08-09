@@ -5,6 +5,7 @@ namespace AsyncReactAwait.Promises.Extensions
     /// <summary>
     /// Extensions for promises.
     /// </summary>
+    [Obsolete]
     public static class PromiseExtensions
     {
         /// <summary>
