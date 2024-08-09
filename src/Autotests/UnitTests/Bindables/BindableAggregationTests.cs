@@ -365,7 +365,130 @@ public class BindableAggregationTests
         
         // Assert
         Assert.AreEqual(
-            floatBindables.Length + 1,
+            floatBindables.Length + 1, // additional one on creation
             aggregationCallsCount);
+    }
+    
+    
+    [Test]
+    public void Aggregate1000Decorators_AggregationCalled()
+    {
+        // Arrange
+        var sourceFloatBindables = new Mutable<float>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i] = new Mutable<float>();
+        }
+
+        var stringBindables = new IBindable<string>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            stringBindables[i] = sourceFloatBindables[i].ConvertTo(x => x.ToString());
+        }
+        var aggregationCallsCount = 0;
+        var aggregatedBindable = 
+            Bindable.Aggregate(stringBindables, _ => 0f);
+        aggregatedBindable.Bind(_ => aggregationCallsCount++);
+
+        // Act
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i].ForceSet(i);
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            stringBindables.Length + 1, // additional one on creation
+            aggregationCallsCount);
+    }
+
+    [Test]
+    public void Aggregate1000Bindables_ValToVal_AggregatedCorrectly()
+    {
+        // Arrange
+        var sourceFloatBindables = new Mutable<float>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i] = new Mutable<float>();
+        }
+        
+        var floatBindables = new IBindable<float>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            floatBindables[i] = sourceFloatBindables[i].ConvertTo(x => x + 1f);
+        }
+        var aggregatedBindable = 
+            Bindable.Aggregate(floatBindables, values => values.Sum());
+        
+        // Act
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i].ForceSet(i);
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            floatBindables.Select(x => x.Value).Sum(),
+            aggregatedBindable.Value);
+    }
+
+    [Test]
+    public void Aggregate1000Bindables_ValToRef_AggregatedCorrectly()
+    {
+        // Arrange
+        var sourceFloatBindables = new Mutable<float>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i] = new Mutable<float>();
+        }
+        
+        var stringBindables = new IBindable<string>[1000];
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            stringBindables[i] = sourceFloatBindables[i].ConvertTo(x => x.ToString());
+        }
+        var aggregatedBindable = 
+            Bindable.Aggregate(stringBindables, values => string.Join("", values));
+        
+        // Act
+        for (int i = 0; i < sourceFloatBindables.Length; i++)
+        {
+            sourceFloatBindables[i].ForceSet(i);
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            string.Join("", stringBindables.Select(x => x.Value)),
+            aggregatedBindable.Value);
+    }
+
+    [Test]
+    public void Aggregate1000Bindables_RefToVal_AggregatedCorrectly()
+    {
+        // Arrange
+        var sourceStringBindables = new Mutable<string>[1000];
+        for (int i = 0; i < sourceStringBindables.Length; i++)
+        {
+            sourceStringBindables[i] = new Mutable<string>("0");
+        }
+        
+        var floatBindables = new IBindable<float>[1000];
+        for (int i = 0; i < sourceStringBindables.Length; i++)
+        {
+            floatBindables[i] = sourceStringBindables[i].ConvertTo(float.Parse);
+        }
+        var aggregatedBindable = 
+            Bindable.Aggregate(floatBindables, values => values.Sum());
+        
+        // Act
+        for (int i = 0; i < sourceStringBindables.Length; i++)
+        {
+            sourceStringBindables[i].ForceSet(i.ToString());
+        }
+        
+        // Assert
+        Assert.AreEqual(
+            floatBindables.Select(x => x.Value).Sum(),
+            aggregatedBindable.Value);
     }
 }

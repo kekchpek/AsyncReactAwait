@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AsyncReactAwait.Bindable
 {
-    internal class BindableDecorator<T, TSource> : IBindable<T>
+    internal class BindableDecorator<T, TSource> : IBindable<T>, IBindableRaw
     {
         private readonly IBindable<TSource> _bindable;
         private readonly Func<TSource, T> _predicate;
@@ -11,6 +11,38 @@ namespace AsyncReactAwait.Bindable
         private readonly Dictionary<Delegate, Delegate> _handlersMap = new();
 
         public T Value => _predicate(_bindable.Value);
+
+        object? IBindableRaw.Value => Value;
+        
+        public void Bind(Action<object?> handler, bool callImmediately = true)
+        {
+            void NewHandler(TSource x) => handler(_predicate(x));
+            _handlersMap.Add(handler, (Action<TSource>)NewHandler);
+            _bindable.Bind(NewHandler, callImmediately);
+        }
+
+        public void Bind(Action<object?, object?> handler)
+        {
+            void NewHandler(TSource prev, TSource next) => handler(_predicate(prev), _predicate(next));
+            _handlersMap.Add(handler, (Action<TSource, TSource>)NewHandler);
+            _bindable.Bind(NewHandler);
+        }
+
+        public void Unbind(Action<object?> handler)
+        {
+            if (_handlersMap.TryGetValue(handler, out var newHandler))
+            {
+                _bindable.Unbind((Action<TSource>)newHandler);
+            }
+        }
+
+        public void Unbind(Action<object?, object?> handler)
+        {
+            if (_handlersMap.TryGetValue(handler, out var newHandler))
+            {
+                _bindable.Unbind((Action<TSource, TSource>)newHandler);
+            }
+        }
 
         public BindableDecorator(IBindable<TSource> bindable, Func<TSource, T> predicate)
         {
