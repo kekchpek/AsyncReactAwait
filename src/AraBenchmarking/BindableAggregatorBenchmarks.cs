@@ -12,6 +12,7 @@ public class BindableAggregatorBenchmarks
     private IMutable<int>? _mutable2;
     private IBindable<int>? _aggregator;
 
+
     [GlobalSetup]
     public void CreateMutable()
     {
