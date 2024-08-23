@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AsyncReactAwait.Bindable
 {
@@ -26,7 +27,7 @@ namespace AsyncReactAwait.Bindable
             set
             {
                 StopProxying();
-                if (Equals(_value, value))
+                if (EqualityComparer<T>.Default.Equals(_value, value))
                     return;
                 ForceSetInternal(value);
             }
