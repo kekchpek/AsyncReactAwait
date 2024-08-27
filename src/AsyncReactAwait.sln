@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Autotests\Libs\NSubstitute.dll = Autotests\Libs\NSubstitute.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AraBenchmarking", "AraBenchmarking\AraBenchmarking.csproj", "{1368DCE4-F77F-4279-8574-95D887FDFF07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A14C2A8F-8E91-40BD-972F-607B66C975A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1368DCE4-F77F-4279-8574-95D887FDFF07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1368DCE4-F77F-4279-8574-95D887FDFF07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1368DCE4-F77F-4279-8574-95D887FDFF07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1368DCE4-F77F-4279-8574-95D887FDFF07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
