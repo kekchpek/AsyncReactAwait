@@ -8,14 +8,16 @@ namespace AsyncReactAwait.Bindable
     /// An aggregator for bindable values.
     /// </summary>
     /// <typeparam name="TRes">The aggregated value type.</typeparam>
-    public class BindableAggregator<TRes> : IBindable<TRes>
+    public class BindableAggregator<TRes> : IBindable<TRes>, IBindableRaw
     {
         private readonly IBindableRaw[] _bindableArr;
         private readonly Func<object[], TRes> _aggregator;
 
         private readonly Dictionary<Action<TRes>, int> _handlers = new();
+        private readonly Dictionary<Action<object>, int> _rawHandlers = new();
         private readonly Dictionary<Action, int> _blindHandlers = new();
         private readonly Dictionary<Action<TRes, TRes>, int> _fullHandlers = new();
+        private readonly Dictionary<Action<object, object>, int> _rawFullHandlers = new();
 
         private bool _subscribed;
 
@@ -23,6 +25,49 @@ namespace AsyncReactAwait.Bindable
 
         /// <inheritdoc cref="IBindable{T}.Value"/>
         public TRes Value => _aggregator.Invoke(_bindableArr.Select(x => x.Value!).ToArray());
+
+        object? IBindableRaw.Value => Value;
+
+        void IBindableRaw.Bind(Action<object?> handler, bool callImmediately)
+        {
+            if (!_rawHandlers.TryAdd(handler, 1))
+            {
+                _rawHandlers[handler]++;
+            }
+
+            UpdateSourceBinding();
+            if (callImmediately)
+            {
+                handler.Invoke(Value);
+            }
+        }
+
+        void IBindableRaw.Bind(Action<object?, object?> handler)
+        {
+            if (!_rawFullHandlers.TryAdd(handler, 1))
+            {
+                _rawFullHandlers[handler]++;
+            }
+            UpdateSourceBinding();
+        }
+
+        void IBindableRaw.Unbind(Action<object?> handler)
+        {
+            if (!_rawHandlers.ContainsKey(handler))
+                return;
+            if (--_rawHandlers[handler] <= 0)
+                _rawHandlers.Remove(handler);
+            UpdateSourceBinding();
+        }
+
+        void IBindableRaw.Unbind(Action<object?, object?> handler)
+        {
+            if (!_rawFullHandlers.ContainsKey(handler))
+                return;
+            if (--_rawFullHandlers[handler] <= 0)
+                _rawFullHandlers.Remove(handler);
+            UpdateSourceBinding();
+        }
 
         /// <summary>
         /// Constructor for bindable values aggregator.
@@ -39,14 +84,11 @@ namespace AsyncReactAwait.Bindable
         /// <inheritdoc cref="IBindable{T}.Bind(Action{T}, bool)"/>
         public void Bind(Action<TRes> handler, bool callImmediately = true)
         {
-            if (_handlers.ContainsKey(handler))
+            if (!_handlers.TryAdd(handler, 1))
             {
                 _handlers[handler]++;
             }
-            else
-            {
-                _handlers.Add(handler, 1);
-            }
+
             UpdateSourceBinding();
             if (callImmediately)
             {
@@ -57,14 +99,11 @@ namespace AsyncReactAwait.Bindable
         /// <inheritdoc cref="IBindable{T}.Bind(Action, bool)"/>
         public void Bind(Action handler, bool callImmediately = true)
         {
-            if (_blindHandlers.ContainsKey(handler))
+            if (!_blindHandlers.TryAdd(handler, 1))
             {
                 _blindHandlers[handler]++;
             }
-            else
-            {
-                _blindHandlers.Add(handler, 1);
-            }
+
             UpdateSourceBinding();
             if (callImmediately)
             {
@@ -75,14 +114,11 @@ namespace AsyncReactAwait.Bindable
         /// <inheritdoc cref="IBindable{T}.Bind(Action{T,T})"/>
         public void Bind(Action<TRes, TRes> handler)
         {
-            if (_fullHandlers.ContainsKey(handler))
+            if (!_fullHandlers.TryAdd(handler, 1))
             {
                 _fullHandlers[handler]++;
             }
-            else
-            {
-                _fullHandlers.Add(handler, 1);
-            }
+
             UpdateSourceBinding();
         }
 
@@ -91,8 +127,7 @@ namespace AsyncReactAwait.Bindable
         {
             if (!_handlers.ContainsKey(handler))
                 return;
-            _handlers[handler]--;
-            if (_handlers[handler] <= 0)
+            if (--_handlers[handler] <= 0)
                 _handlers.Remove(handler);
             UpdateSourceBinding();
         }
@@ -102,8 +137,7 @@ namespace AsyncReactAwait.Bindable
         {
             if (!_blindHandlers.ContainsKey(handler))
                 return;
-            _blindHandlers[handler]--;
-            if (_blindHandlers[handler] <= 0)
+            if (--_blindHandlers[handler] <= 0)
                 _blindHandlers.Remove(handler);
             UpdateSourceBinding();
         }
@@ -113,15 +147,15 @@ namespace AsyncReactAwait.Bindable
         {
             if (!_fullHandlers.ContainsKey(handler))
                 return;
-            _fullHandlers[handler]--;
-            if (_fullHandlers[handler] <= 0)
+            if (--_fullHandlers[handler] <= 0)
                 _fullHandlers.Remove(handler);
             UpdateSourceBinding();
         }
 
         private void UpdateSourceBinding()
         {
-            if (_handlers.Any() || _blindHandlers.Any() || _fullHandlers.Any())
+            if (_handlers.Any() || _blindHandlers.Any() || _fullHandlers.Any()
+                || _rawHandlers.Any() || _rawFullHandlers.Any())
             {
                 if (!_subscribed)
                 {
@@ -157,6 +191,13 @@ namespace AsyncReactAwait.Bindable
                     keyValuePair.Key?.Invoke(Value);
                 }
             }
+            foreach (var keyValuePair in _rawHandlers)
+            {
+                for (var i = 0; i < keyValuePair.Value; i++)
+                {
+                    keyValuePair.Key?.Invoke(Value);
+                }
+            }
             foreach (var keyValuePair in _blindHandlers)
             {
                 for (var i = 0; i < keyValuePair.Value; i++)
@@ -171,6 +212,13 @@ namespace AsyncReactAwait.Bindable
         private void OnSourceUpdatedFull(object? prevVal, object? nextVal)
         {
             foreach (var keyValuePair in _fullHandlers)
+            {
+                for (var i = 0; i < keyValuePair.Value; i++)
+                {
+                    keyValuePair.Key?.Invoke(_prevValue!, Value);
+                }
+            }
+            foreach (var keyValuePair in _rawFullHandlers)
             {
                 for (var i = 0; i < keyValuePair.Value; i++)
                 {
