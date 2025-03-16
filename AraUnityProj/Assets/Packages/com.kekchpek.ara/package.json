@@ -1,7 +1,7 @@
 {
   "name": "com.kekchpek.ara",
   "displayName": "AsyncReactAwait",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "ARA is the development suit for asynchronous and reactive C# development. It contains classes for convenient data changing and handling management.",
   "unity": "2022.3",
   "documentationUrl": "https://github.com/kekchpek/AsyncReactAwait",

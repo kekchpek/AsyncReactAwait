@@ -14,10 +14,10 @@ namespace AsyncReactAwait.Bindable
         private readonly Func<object[], TRes> _aggregator;
 
         private readonly Dictionary<Action<TRes>, int> _handlers = new();
-        private readonly Dictionary<Action<object>, int> _rawHandlers = new();
+        private readonly Dictionary<Action<object?>, int> _rawHandlers = new();
         private readonly Dictionary<Action, int> _blindHandlers = new();
         private readonly Dictionary<Action<TRes, TRes>, int> _fullHandlers = new();
-        private readonly Dictionary<Action<object, object>, int> _rawFullHandlers = new();
+        private readonly Dictionary<Action<object?, object?>, int> _rawFullHandlers = new();
 
         private bool _subscribed;
 
