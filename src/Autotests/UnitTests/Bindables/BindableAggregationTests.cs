@@ -28,6 +28,25 @@ public class BindableAggregationTests
         // Assert
         Assert.AreEqual(1100, val);
     }
+    
+    [Test]
+    public void AggregationRawBindInstantCall()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? val = null;
+        
+        // Act
+        aggregated.Bind(x => val = (int)x!);
+        
+        // Assert
+        Assert.AreEqual(1100, val);
+    }
 
     [Test]
     public void AggregationBindNoCall()
@@ -43,6 +62,25 @@ public class BindableAggregationTests
         
         // Act
         aggregated.Bind(x => val = x, false);
+        
+        // Assert
+        Assert.AreEqual(null, val);
+    }
+    
+    [Test]
+    public void AggregationRawBindNoCall()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? val = null;
+        
+        // Act
+        aggregated.Bind(x => val = (int)x!, false);
         
         // Assert
         Assert.AreEqual(null, val);
@@ -67,9 +105,29 @@ public class BindableAggregationTests
         // Assert
         Assert.AreEqual(3000, val);
     }
+    
+    [Test]
+    public void AggregationRawBind()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? val = null;
+        
+        // Act
+        aggregated.Bind(x => val = (int)x!, false);
+        bindable1.Set(2000);
+        
+        // Assert
+        Assert.AreEqual(3000, val);
+    }
 
     [Test]
-    public void AggregationUnBind()
+    public void AggregationUnbind()
     {
         // Arrange
         var bindable1 = new Mutable<int>(100);
@@ -216,6 +274,31 @@ public class BindableAggregationTests
         Assert.AreEqual(null, prevVal);
         Assert.AreEqual(null, newVal);
     }
+    
+    [Test]
+    public void AggregationRawBindFullNoCall()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? prevVal = null;
+        int? newVal = null;
+        
+        // Act
+        aggregated.Bind((p, n) =>
+        {
+            prevVal = (int)p!;
+            newVal = (int)n!;
+        });
+        
+        // Assert
+        Assert.AreEqual(null, prevVal);
+        Assert.AreEqual(null, newVal);
+    }
 
     [Test]
     public void AggregationBindFull()
@@ -235,6 +318,32 @@ public class BindableAggregationTests
         {
             prevVal = p;
             newVal = n;
+        });
+        bindable1.Set(10000);
+        
+        // Assert
+        Assert.AreEqual(1100, prevVal);
+        Assert.AreEqual(11000, newVal);
+    }
+
+    [Test]
+    public void AggregationRawBindFull()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? prevVal = null;
+        int? newVal = null;
+        
+        // Act
+        aggregated.Bind((p, n) =>
+        {
+            prevVal = (int)p!;
+            newVal = (int)n!;
         });
         bindable1.Set(10000);
         
@@ -298,7 +407,7 @@ public class BindableAggregationTests
         Assert.AreEqual(null, prevVal);
         Assert.AreEqual(null, newVal);
     }
-
+    
     [Test]
     public void BindingProxyingNoBind()
     {
@@ -345,103 +454,9 @@ public class BindableAggregationTests
         bindable2.Received(1).Bind(Arg.Any<Action<int>>(), false);
         bindable2.Received(1).Bind(Arg.Any<Action<int, int>>());
     }
-
-    [Test]
-    public void BindingProxyingUnbind()
-    {
-        // Arrange
-        IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
-        bindable1.Value.Returns(100);
-        IBindable<int> bindable2 = Substitute.For<IBindable<int>>();
-        bindable2.Value.Returns(100);
-        
-        // Act
-        var aggregatedBindable = (IBindableRaw)new BindableAggregator<int, int, int>(
-            bindable1, bindable2, 
-            (v1, v2) => v1 + v2);
-        void Handler(object x) { }
-        aggregatedBindable.Bind(Handler, false);
-        
-        // Assert
-        bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
-        bindable1.Received(1).Bind(Arg.Any<Action<int>>(), false);
-        bindable1.Received(1).Bind(Arg.Any<Action<int, int>>());
-        bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
-        bindable2.Received(1).Bind(Arg.Any<Action<int>>(), false);
-        bindable2.Received(1).Bind(Arg.Any<Action<int, int>>());
-    }
-
     
     [Test]
-    public void Fixed2_InstantAndUpdate()
-    {
-        var m1 = new Mutable<int>(1);
-        var m2 = new Mutable<int>(2);
-        var agg = new BindableAggregator<int,int,int>(m1,m2,(a,b)=>a+b);
-
-        int? val = null;
-        agg.Bind(x=>val=x);
-        Assert.AreEqual(3,val);
-
-        m1.Set(10);
-        Assert.AreEqual(12,val);
-    }
-
-    [Test]
-    public void Fixed3_InstantAndUpdate()
-    {
-        var m1 = new Mutable<int>(1);
-        var m2 = new Mutable<int>(2);
-        var m3 = new Mutable<int>(3);
-        var agg = new BindableAggregator<int,int,int,int>(m1,m2,m3,(a,b,c)=>a+b+c);
-        int? val=null;
-        agg.Bind(x=>val=x);
-        Assert.AreEqual(6,val);
-        m3.Set(30);
-        Assert.AreEqual(33,val);
-    }
-
-    [Test]
-    public void Fixed4_InstantAndUpdate()
-    {
-        var m1 = new Mutable<int>(1);
-        var m2 = new Mutable<int>(2);
-        var m3 = new Mutable<int>(3);
-        var m4 = new Mutable<int>(4);
-        var agg = new BindableAggregator<int,int,int,int,int>(m1,m2,m3,m4,(a,b,c,d)=>a+b+c+d);
-        int? val=null;
-        agg.Bind(x=>val=x);
-        Assert.AreEqual(10,val);
-        m2.Set(20);
-        Assert.AreEqual(1+20+3+4,val);
-    }
-
-    [Test]
-    public void TypedGenericAggregator_List()
-    {
-        var list = new[] { new Mutable<int>(5), new Mutable<int>(6), new Mutable<int>(7)};
-        var agg = new BindableAggregator<int,int>(list, b => b[0].Value + b[1].Value + b[2].Value);
-        int? val=null;
-        agg.Bind(x=>val=x);
-        Assert.AreEqual(18,val);
-        list[1].Set(10);
-        Assert.AreEqual(22,val);
-    }
-
-    [Test]
-    public void RawAggregator_List()
-    {
-        IBindableRaw[] raws = { new Mutable<int>(1), new Mutable<int>(2), new Mutable<int>(3)};
-        var agg = new BindableAggregator<int>(raws, r => (int)r[0].Value! + (int)r[1].Value! + (int)r[2].Value!);
-        int? val=null;
-        agg.Bind(x=>val=x);
-        Assert.AreEqual(6,val);
-        ((Mutable<int>)raws[2]).Set(30);
-        Assert.AreEqual(33,val);
-    }
-
-    [Test]
-    public void RawBindingProxyingUnbind()
+    public void RawBindingProxyingBind()
     {
         // Arrange
         IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
@@ -450,10 +465,10 @@ public class BindableAggregationTests
         bindable2.Value.Returns(100);
         
         // Act
-        var aggregatedBindable = (IBindableRaw)new BindableAggregator<int, int, int>(
+        var aggregatedBindable = new BindableAggregator<int, int, int>(
             bindable1, bindable2, 
             (v1, v2) => v1 + v2);
-        void Handler(object x) { }
+        void Handler(int x) { }
         aggregatedBindable.Bind(Handler, false);
         aggregatedBindable.Unbind(Handler);
         

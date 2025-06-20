@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET Core SDK 7
-      uses: actions/setup-dotnet@v3.2.0
+      uses: actions/setup-dotnet@v4.3.1
       with:
         dotnet-version: '7.0.x'
     - name: Restore .Net
@@ -76,7 +76,7 @@ jobs:
           git push --tags
         fi
     - name: Create Release
-      uses: ncipollo/release-action@v1.13.0
+      uses: ncipollo/release-action@v1.16.0
       if: github.ref == 'refs/heads/master'
       with:
         tag: ${{ env.newVersion }}
@@ -84,7 +84,7 @@ jobs:
         artifacts: "src/build/*.nupkg, AsyncReactAwait.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Expose as artifact
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4.6.2
       with:
        name: Build
        path: src/build

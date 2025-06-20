@@ -251,6 +251,13 @@ namespace AsyncReactAwait.Bindable
                     keyValuePair.Key?.Invoke(current);
                 }
             }
+            foreach (var keyValuePair in _rawHandlers)
+            {
+                for (var i = 0; i < keyValuePair.Value; i++)
+                {
+                    keyValuePair.Key?.Invoke(Value);
+                }
+            }
             foreach (var keyValuePair in _blindHandlers)
             {
                 for (var i = 0; i < keyValuePair.Value; i++)
@@ -280,6 +287,13 @@ namespace AsyncReactAwait.Bindable
                 for (var i = 0; i < keyValuePair.Value; i++)
                 {
                     keyValuePair.Key?.Invoke(previous, current);
+                }
+            }
+            foreach (var keyValuePair in _rawFullHandlers)
+            {
+                for (var i = 0; i < keyValuePair.Value; i++)
+                {
+                    keyValuePair.Key?.Invoke(_prevValue!, Value);
                 }
             }
 
