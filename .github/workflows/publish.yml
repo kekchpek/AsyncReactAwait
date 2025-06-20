@@ -67,7 +67,7 @@ jobs:
       run: zip AsyncReactAwait.zip src/build/AsyncReactAwait.dll src/build/AsyncReactAwait.xml
     - name: Tag non-release
       if: github.ref != 'refs/heads/master'
-      run: 
+      run: |
         lastTag=$(git describe --tags --abbrev=0)
         currentTag=$(git tag --contains)
         if [ "$lastTag" != "$currentTag" ]
