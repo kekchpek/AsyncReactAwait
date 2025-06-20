@@ -10,16 +10,6 @@ namespace AsyncReactAwait.Bindable
     public interface IMutable<T> : IBindable<T>
     {
 
-        /// <summary>
-        /// Fired on any listener is bound for this value.
-        /// </summary>
-        event Action OnAnySubscription;
-
-        /// <summary>
-        /// Fired on any listener is unbound from this value, and no other listeners left.
-        /// </summary>
-        event Action OnSubscriptionsCleared;
-
         /// <inheritdoc cref="IBindable{T}.Value"/>
         /// Automatically resets proxying value.
         new T Value { get; set; }

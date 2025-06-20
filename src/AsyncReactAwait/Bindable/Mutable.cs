@@ -17,7 +17,11 @@ namespace AsyncReactAwait.Bindable
         private event Action? OnChangeBlind;
         private event Action<T, T>? OnChangeFull;
         private event Action<object?, object?>? OnChangeFullRaw;
+        
+        /// <inheritdoc cref="IBindable.OnAnySubscription"/>
         public event Action? OnAnySubscription;
+
+        /// <inheritdoc cref="IBindable.OnSubscriptionsCleared"/>
         public event Action? OnSubscriptionsCleared;
 
         /// <inheritdoc cref="IMutable{T}.Value"/>
@@ -124,7 +128,7 @@ namespace AsyncReactAwait.Bindable
             OnChange += handler;
             OnAnySubscription?.Invoke();
         }
-        /// <inheritdoc cref="IBindable{T}.Bind(Action, bool)"/>
+        /// <inheritdoc cref="IBindable.Bind(Action, bool)"/>
         /// <exception cref="ArgumentNullException"></exception>
         public void Bind(Action handler, bool callImmediately = true)
         {
@@ -174,7 +178,7 @@ namespace AsyncReactAwait.Bindable
                 OnSubscriptionsCleared?.Invoke();
         }
 
-        /// <inheritdoc cref="IBindable{T}.Unbind(Action)"/>
+        /// <inheritdoc cref="IBindable.Unbind(Action)"/>
         public void Unbind(Action handler)
         {
             if (!AnyListeners())

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Numerics;
 using AsyncReactAwait.Bindable;
 using AsyncReactAwait.Bindable.BindableExtensions;
 using NSubstitute;
@@ -81,6 +82,28 @@ public class BindableAggregationTests
         
         // Act
         void Handler(int x) => val = x;
+        aggregated.Bind(Handler, false);
+        aggregated.Unbind(Handler);
+        bindable1.Set(2000);
+        
+        // Assert
+        Assert.AreEqual(null, val);
+    }
+
+    [Test]
+    public void AggregationRawUnbind()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? val = null;
+        
+        // Act
+        void Handler(object x) => val = (int)(x!);
         aggregated.Bind(Handler, false);
         aggregated.Unbind(Handler);
         bindable1.Set(2000);
@@ -249,74 +272,196 @@ public class BindableAggregationTests
     }
 
     [Test]
+    public void AggregationRawUnbindFull()
+    {
+        // Arrange
+        var bindable1 = new Mutable<int>(100);
+        var bindable2 = new Mutable<int>(1000);
+        var aggregated = (IBindableRaw)Bindable.Aggregate(
+            bindable1,
+            bindable2,
+            (val1, val2) => val1 + val2);
+        int? prevVal = null;
+        int? newVal = null;
+        
+        // Act
+        void Handler(object p, object n) 
+        {
+            prevVal = (int)p;
+            newVal = (int)n;
+        }
+        aggregated.Bind(Handler);
+        aggregated.Unbind(Handler);
+        bindable1.Set(10000);
+        
+        // Assert
+        Assert.AreEqual(null, prevVal);
+        Assert.AreEqual(null, newVal);
+    }
+
+    [Test]
     public void BindingProxyingNoBind()
     {
         // Arrange
-        IBindableRaw bindable1 = Substitute.For<IBindableRaw>();
-        IBindableRaw bindable2 = Substitute.For<IBindableRaw>();
+        IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
+        IBindable<int> bindable2 = Substitute.For<IBindable<int>>();
         
         // Act
         // ReSharper disable once UnusedVariable
-        var aggregatedBindable = new BindableAggregator<int>(
-            new [] { bindable1, bindable2 }, 
-            values => (int)values[0] + (int)values[1]);
+        var aggregatedBindable = new BindableAggregator<int, int, int>(
+            bindable1, bindable2, 
+            (v1, v2) => v1 + v2);
         
         // Assert
         bindable1.DidNotReceiveWithAnyArgs().Bind(null!, false);
         bindable1.DidNotReceiveWithAnyArgs().Bind(null!, false);
-        bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<object, object>>());
+        bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<int>>());
         bindable2.DidNotReceiveWithAnyArgs().Bind(null!, false);
         bindable2.DidNotReceiveWithAnyArgs().Bind(null!, false);
-        bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<object, object>>());
+        bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action<int>>());
     }
 
     [Test]
     public void BindingProxyingBind()
     {
         // Arrange
-        IBindableRaw bindable1 = Substitute.For<IBindableRaw>();
+        IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
         bindable1.Value.Returns(100);
-        IBindableRaw bindable2 = Substitute.For<IBindableRaw>();
+        IBindable<int> bindable2 = Substitute.For<IBindable<int>>();
         bindable2.Value.Returns(100);
         
         // Act
-        var aggregatedBindable = new BindableAggregator<int>(
-            new [] { bindable1, bindable2 }, 
-            values => (int)values[0] + (int)values[1]);
+        var aggregatedBindable = new BindableAggregator<int, int, int>(
+            bindable1, bindable2, 
+            (v1, v2) => v1 + v2);
         void Handler(int x) { }
         aggregatedBindable.Bind(Handler, false);
         
         // Assert
         bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
-        bindable1.Received(1).Bind(Arg.Any<Action<object>>(), false);
-        bindable1.Received(1).Bind(Arg.Any<Action<object, object>>());
+        bindable1.Received(1).Bind(Arg.Any<Action<int>>(), false);
+        bindable1.Received(1).Bind(Arg.Any<Action<int, int>>());
         bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
-        bindable2.Received(1).Bind(Arg.Any<Action<object>>(), false);
-        bindable2.Received(1).Bind(Arg.Any<Action<object, object>>());
+        bindable2.Received(1).Bind(Arg.Any<Action<int>>(), false);
+        bindable2.Received(1).Bind(Arg.Any<Action<int, int>>());
     }
 
     [Test]
     public void BindingProxyingUnbind()
     {
         // Arrange
-        IBindableRaw bindable1 = Substitute.For<IBindableRaw>();
+        IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
         bindable1.Value.Returns(100);
-        IBindableRaw bindable2 = Substitute.For<IBindableRaw>();
+        IBindable<int> bindable2 = Substitute.For<IBindable<int>>();
         bindable2.Value.Returns(100);
         
         // Act
-        var aggregatedBindable = new BindableAggregator<int>(
-            new [] { bindable1, bindable2 }, 
-            values => (int)values[0] + (int)values[1]);
-        void Handler(int x) { }
+        var aggregatedBindable = (IBindableRaw)new BindableAggregator<int, int, int>(
+            bindable1, bindable2, 
+            (v1, v2) => v1 + v2);
+        void Handler(object x) { }
+        aggregatedBindable.Bind(Handler, false);
+        
+        // Assert
+        bindable1.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
+        bindable1.Received(1).Bind(Arg.Any<Action<int>>(), false);
+        bindable1.Received(1).Bind(Arg.Any<Action<int, int>>());
+        bindable2.DidNotReceiveWithAnyArgs().Bind(Arg.Any<Action>(), false);
+        bindable2.Received(1).Bind(Arg.Any<Action<int>>(), false);
+        bindable2.Received(1).Bind(Arg.Any<Action<int, int>>());
+    }
+
+    
+    [Test]
+    public void Fixed2_InstantAndUpdate()
+    {
+        var m1 = new Mutable<int>(1);
+        var m2 = new Mutable<int>(2);
+        var agg = new BindableAggregator<int,int,int>(m1,m2,(a,b)=>a+b);
+
+        int? val = null;
+        agg.Bind(x=>val=x);
+        Assert.AreEqual(3,val);
+
+        m1.Set(10);
+        Assert.AreEqual(12,val);
+    }
+
+    [Test]
+    public void Fixed3_InstantAndUpdate()
+    {
+        var m1 = new Mutable<int>(1);
+        var m2 = new Mutable<int>(2);
+        var m3 = new Mutable<int>(3);
+        var agg = new BindableAggregator<int,int,int,int>(m1,m2,m3,(a,b,c)=>a+b+c);
+        int? val=null;
+        agg.Bind(x=>val=x);
+        Assert.AreEqual(6,val);
+        m3.Set(30);
+        Assert.AreEqual(33,val);
+    }
+
+    [Test]
+    public void Fixed4_InstantAndUpdate()
+    {
+        var m1 = new Mutable<int>(1);
+        var m2 = new Mutable<int>(2);
+        var m3 = new Mutable<int>(3);
+        var m4 = new Mutable<int>(4);
+        var agg = new BindableAggregator<int,int,int,int,int>(m1,m2,m3,m4,(a,b,c,d)=>a+b+c+d);
+        int? val=null;
+        agg.Bind(x=>val=x);
+        Assert.AreEqual(10,val);
+        m2.Set(20);
+        Assert.AreEqual(1+20+3+4,val);
+    }
+
+    [Test]
+    public void TypedGenericAggregator_List()
+    {
+        var list = new[] { new Mutable<int>(5), new Mutable<int>(6), new Mutable<int>(7)};
+        var agg = new BindableAggregator<int,int>(list, b => b[0].Value + b[1].Value + b[2].Value);
+        int? val=null;
+        agg.Bind(x=>val=x);
+        Assert.AreEqual(18,val);
+        list[1].Set(10);
+        Assert.AreEqual(22,val);
+    }
+
+    [Test]
+    public void RawAggregator_List()
+    {
+        IBindableRaw[] raws = { new Mutable<int>(1), new Mutable<int>(2), new Mutable<int>(3)};
+        var agg = new BindableAggregator<int>(raws, r => (int)r[0].Value! + (int)r[1].Value! + (int)r[2].Value!);
+        int? val=null;
+        agg.Bind(x=>val=x);
+        Assert.AreEqual(6,val);
+        ((Mutable<int>)raws[2]).Set(30);
+        Assert.AreEqual(33,val);
+    }
+
+    [Test]
+    public void RawBindingProxyingUnbind()
+    {
+        // Arrange
+        IBindable<int> bindable1 = Substitute.For<IBindable<int>>();
+        bindable1.Value.Returns(100);
+        IBindable<int> bindable2 = Substitute.For<IBindable<int>>();
+        bindable2.Value.Returns(100);
+        
+        // Act
+        var aggregatedBindable = (IBindableRaw)new BindableAggregator<int, int, int>(
+            bindable1, bindable2, 
+            (v1, v2) => v1 + v2);
+        void Handler(object x) { }
         aggregatedBindable.Bind(Handler, false);
         aggregatedBindable.Unbind(Handler);
         
         // Assert
-        bindable1.Received(1).Unbind(Arg.Any<Action<object>>());
-        bindable1.Received(1).Unbind(Arg.Any<Action<object, object>>());
-        bindable2.Received(1).Unbind(Arg.Any<Action<object>>());
-        bindable2.Received(1).Unbind(Arg.Any<Action<object, object>>());
+        bindable1.Received(1).Unbind(Arg.Any<Action<int>>());
+        bindable1.Received(1).Unbind(Arg.Any<Action<int, int>>());
+        bindable2.Received(1).Unbind(Arg.Any<Action<int>>());
+        bindable2.Received(1).Unbind(Arg.Any<Action<int, int>>());
     }
 
     [Test]
@@ -329,7 +474,7 @@ public class BindableAggregationTests
             floatBindables[i] = new Mutable<float>();
         }
         var aggregatedBindable = 
-            Bindable.Aggregate(floatBindables, values => values.Sum());
+            Bindable.Aggregate(floatBindables, values => values.Select(x => x.Value).Sum());
         
         // Act
         for (int i = 0; i < floatBindables.Length; i++)
@@ -354,7 +499,7 @@ public class BindableAggregationTests
         }
         var aggregationCallsCount = 0;
         var aggregatedBindable = 
-            Bindable.Aggregate(floatBindables, _ => 0f);
+            Bindable.Aggregate<float, float>(floatBindables, _ => 0f);
         aggregatedBindable.Bind(_ => aggregationCallsCount++);
 
         // Act
@@ -387,7 +532,7 @@ public class BindableAggregationTests
         }
         var aggregationCallsCount = 0;
         var aggregatedBindable = 
-            Bindable.Aggregate(stringBindables, _ => 0f);
+            Bindable.Aggregate<string, float>(stringBindables, _ => 0f);
         aggregatedBindable.Bind(_ => aggregationCallsCount++);
 
         // Act
@@ -418,7 +563,7 @@ public class BindableAggregationTests
             floatBindables[i] = sourceFloatBindables[i].ConvertTo(x => x + 1f);
         }
         var aggregatedBindable = 
-            Bindable.Aggregate(floatBindables, values => values.Sum());
+            Bindable.Aggregate(floatBindables, values => values.Select(x => x.Value).Sum());
         
         // Act
         for (int i = 0; i < sourceFloatBindables.Length; i++)
@@ -448,7 +593,7 @@ public class BindableAggregationTests
             stringBindables[i] = sourceFloatBindables[i].ConvertTo(x => x.ToString());
         }
         var aggregatedBindable = 
-            Bindable.Aggregate(stringBindables, values => string.Join("", values));
+            Bindable.Aggregate<string, string>(stringBindables, values => string.Join("", values.Select(x => x.Value)));
         
         // Act
         for (int i = 0; i < sourceFloatBindables.Length; i++)
@@ -478,7 +623,7 @@ public class BindableAggregationTests
             floatBindables[i] = sourceStringBindables[i].ConvertTo(float.Parse);
         }
         var aggregatedBindable = 
-            Bindable.Aggregate(floatBindables, values => values.Sum());
+            Bindable.Aggregate<float, float>(floatBindables, values => values.Select(x => x.Value).Sum());
         
         // Act
         for (int i = 0; i < sourceStringBindables.Length; i++)

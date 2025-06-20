@@ -9,21 +9,25 @@ namespace AsyncReactAwait.Bindable
     /// </summary>
     public static class Bindable
     {
+        
+        /// <summary>
+        /// Aggregate any count of bindable values of same type
+        /// </summary>
+        public static IBindable<TRes> Aggregate<T, TRes>(IReadOnlyCollection<IBindable<T>> bindables, Func<IReadOnlyList<IBindable<T>>, TRes> aggregator)
+        {
+            return new BindableAggregator<T, TRes>(
+                bindables, 
+                aggregator);
+        }
+
         /// <summary>
         /// Aggregate two bindable values
         /// </summary>
         public static IBindable<TRes> Aggregate<T1, T2, TRes>(IBindable<T1> b1, IBindable<T2> b2, Func<T1, T2, TRes> aggregator)
         {
-            if (!(b1 is IBindableRaw br1))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b2 is IBindableRaw br2))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            
-            return new BindableAggregator<TRes>(
-                new[] { br1, br2 }, 
-                values => aggregator((T1)values[0], (T2)values[1]));
+            return new BindableAggregator<T1, T2, TRes>(
+                b1, b2,
+                aggregator);
         }
         
         /// <summary>
@@ -31,19 +35,9 @@ namespace AsyncReactAwait.Bindable
         /// </summary>
         public static IBindable<TRes> Aggregate<T1, T2, T3, TRes>(IBindable<T1> b1, IBindable<T2> b2, IBindable<T3> b3, Func<T1, T2, T3, TRes> aggregator)
         {
-            if (!(b1 is IBindableRaw br1))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b2 is IBindableRaw br2))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b3 is IBindableRaw br3))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            
-            return new BindableAggregator<TRes>(
-                new[] { br1, br2, br3 }, 
-                values => aggregator((T1)values[0], (T2)values[1], (T3)values[2]));
+            return new BindableAggregator<T1, T2, T3, TRes>(
+                b1, b2, b3,
+                aggregator);
         }
         
         /// <summary>
@@ -51,39 +45,22 @@ namespace AsyncReactAwait.Bindable
         /// </summary>
         public static IBindable<TRes> Aggregate<T1, T2, T3, T4, TRes>(IBindable<T1> b1, IBindable<T2> b2, IBindable<T3> b3, IBindable<T4> b4, Func<T1, T2, T3, T4, TRes> aggregator)
         {
-            if (!(b1 is IBindableRaw br1))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b2 is IBindableRaw br2))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b3 is IBindableRaw br3))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            if (!(b4 is IBindableRaw br4))
-                throw new InvalidOperationException(
-                    $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-            
-            return new BindableAggregator<TRes>(
-                new[] { br1, br2, br3, br4 }, 
-                values => aggregator((T1)values[0], (T2)values[1], (T3)values[2], (T4)values[3]));
+            return new BindableAggregator<T1, T2, T3, T4, TRes>(
+                b1, b2, b3, b4,
+                aggregator);
         }
         
         /// <summary>
-        /// Aggregate any count of bindable values of same type
+        /// Aggregate any count of bindable values. Before it should be able to be casted to IBindableRaw.
+        /// This method is slow, because of value type boxing. Use it only if you have no other choice.
         /// </summary>
-        public static IBindable<TRes> Aggregate<T, TRes>(IEnumerable<IBindable<T>> bindableValues, Func<T[], TRes> aggregator)
+        public static IBindable<TRes> Aggregate<TRes>(IReadOnlyList<IBindable> bindableValues, Func<IReadOnlyList<IBindableRaw>, TRes> aggregator)
         {
-
-            var rawBindables = bindableValues.Select(x =>
-            {
-                if (!(x is IBindableRaw br))
-                    throw new InvalidOperationException(
-                        $"Bindable value should implement {nameof(IBindableRaw)} to be aggregated!");
-                return br;
-            });
-            return new BindableAggregator<TRes>(rawBindables, 
-                values => aggregator(values.Cast<T>().ToArray()));
+            if (bindableValues == null) throw new ArgumentNullException(nameof(bindableValues));
+            if (bindableValues.Any(x => x is not IBindableRaw   ))
+                throw new InvalidOperationException("All bindable values should implement IBindableRaw to be aggregated!");
+            var rawBindables = bindableValues.Cast<IBindableRaw>().ToArray();
+            return new BindableAggregator<TRes>(rawBindables, aggregator);
         }
     }
 }

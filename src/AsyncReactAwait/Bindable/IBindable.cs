@@ -8,6 +8,17 @@ namespace AsyncReactAwait.Bindable
     /// </summary>
     public interface IBindable
     {
+
+        /// <summary>
+        /// Fired on any listener is bound for this value.
+        /// </summary>
+        event Action OnAnySubscription;
+
+        /// <summary>
+        /// Fired on any listener is unbound from this value, and no other listeners left.
+        /// </summary>
+        event Action OnSubscriptionsCleared;
+        
         /// <summary>
         /// Bind a handler for value changing.
         /// </summary>

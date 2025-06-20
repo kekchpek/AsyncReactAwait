@@ -30,14 +30,22 @@ jobs:
     - name: Configure version
       run: |
         git fetch --unshallow
+        # Try to get existing tag pointing to HEAD
         CURRENT_TAG_VERSION=$(git tag --points-at HEAD)
         echo $CURRENT_TAG_VERSION
+
         if [ -z "$CURRENT_TAG_VERSION" ]
         then
-        git remote set-url origin https://$GITHUB_TOKEN@${REPO_URL:6}
-        CURRENT_TAG_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
-        git tag $CURRENT_TAG_VERSION
-        git push origin --tags
+          git remote set-url origin https://$GITHUB_TOKEN@${REPO_URL:6}
+          CURRENT_TAG_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
+
+          if [ "$GITHUB_REF" = "refs/heads/develop" ]
+          then
+            CURRENT_TAG_VERSION="pre-$CURRENT_TAG_VERSION"
+          fi
+
+          git tag $CURRENT_TAG_VERSION
+          git push origin --tags
         fi
         sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$CURRENT_TAG_VERSION\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
         echo "newVersion=$CURRENT_TAG_VERSION"
@@ -58,7 +66,7 @@ jobs:
       run: zip AsyncReactAwait.zip src/build/AsyncReactAwait.dll src/build/AsyncReactAwait.xml
     - name: Tag non-release
       if: github.ref != 'refs/heads/master'
-      run: |
+      run: 
         lastTag=$(git describe --tags --abbrev=0)
         currentTag=$(git tag --contains)
         if [ "$lastTag" != "$currentTag" ]
@@ -68,6 +76,7 @@ jobs:
           git push --tags
         fi
     - name: Create Release
+      if: github.ref != 'refs/heads/master'
       uses: ncipollo/release-action@v1.13.0
       if: github.ref == 'refs/heads/master'
       with:
