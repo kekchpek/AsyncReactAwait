@@ -37,8 +37,9 @@ jobs:
         if [ -z "$CURRENT_TAG_VERSION" ]
         then
           git remote set-url origin https://$GITHUB_TOKEN@${REPO_URL:6}
-          CURRENT_TAG_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
+          CURRENT_VERSION=$(python3 getVersion.py ./VERSION $ARA_BUILD_DATA_PATH/buildVersionV1.txt)
 
+          CURRENT_TAG_VERSION=$CURRENT_VERSION
           if [ "$GITHUB_REF" = "refs/heads/develop" ]
           then
             CURRENT_TAG_VERSION="pre-$CURRENT_TAG_VERSION"
@@ -47,7 +48,7 @@ jobs:
           git tag $CURRENT_TAG_VERSION
           git push origin --tags
         fi
-        sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$CURRENT_TAG_VERSION\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
+        sed -i -e "s/\(<Version>\)\(.*\)\(<\/Version>\)/\1$CURRENT_VERSION\3/" src/AsyncReactAwait/AsyncReactAwait.csproj
         echo "newVersion=$CURRENT_TAG_VERSION"
         echo "newVersion=$CURRENT_TAG_VERSION" >> $GITHUB_ENV
     - name: Test
