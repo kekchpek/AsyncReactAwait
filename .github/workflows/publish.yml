@@ -76,7 +76,6 @@ jobs:
           git push --tags
         fi
     - name: Create Release
-      if: github.ref != 'refs/heads/master'
       uses: ncipollo/release-action@v1.13.0
       if: github.ref == 'refs/heads/master'
       with:
