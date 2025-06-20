@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET Core SDK 7
       uses: actions/setup-dotnet@v4.3.1
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '7.0.x'
     - name: Restore .Net
       run: dotnet restore src
     - name: Configure version
